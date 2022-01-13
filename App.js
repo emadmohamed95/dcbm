@@ -15,9 +15,12 @@ import { useSelector } from 'react-redux';
 import { Login } from './src/screens/Login/Login.jsx';
 import Home from './src/screens/Home/Home.jsx';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { loadUser } from './src/actions/authActions.js';
-
+import { Admin } from './src/screens/Admin/Admin.jsx';
+import { CustomNavigationBar } from './src/Components/CustomNavigationBar.jsx';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { Profile } from './src/screens/Profile/Profile.jsx';
+import { AuthStackNavigatior } from './src/navigation/AuthStackNavigatior.jsx';
 
 
 const AppWrapper = () => {
@@ -25,12 +28,13 @@ const AppWrapper = () => {
   return (
 <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+      <PaperProvider>
       <App />
+      </PaperProvider>
       </PersistGate>
     </Provider>  )
 }
 
-const Stack = createNativeStackNavigator();
 
 const App = () => {
 
@@ -50,18 +54,25 @@ const dispatch = useDispatch()
     //   <PersistGate loading={null} persistor={persistor}>
 
         <NavigationContainer>
-          <Stack.Navigator>
+          <AuthStackNavigatior/>
+          {/* <Stack.Navigator initialRouteName="Home"
+        screenOptions={{
+          header: (props) => <CustomNavigationBar {...props} />,
+        }}>
 
             {auth.isAuthenticated ?
               <>
               <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Admins" component={Admin} />
+              <Stack.Screen name="Profile" component={Profile} />
+
             </>
               :
               <>
                 <Stack.Screen name="Login" component={Login} />
               </>
             }
-          </Stack.Navigator>
+          </Stack.Navigator> */}
 
         </NavigationContainer>
     //   </PersistGate>

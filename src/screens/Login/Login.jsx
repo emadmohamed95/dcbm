@@ -1,8 +1,10 @@
 import React from 'react'
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { login } from '../../actions/authActions';
+import { TextInput , Button} from 'react-native-paper';
+
 export const Login = () => {
     const dispatch = useDispatch()
 
@@ -25,6 +27,9 @@ export const Login = () => {
                             style={styles.textInput}
                             placeholder='username'
                             autoCapitalize='none'
+                            mode="outlined"
+                            selectionColor='#005374'
+                            activeOutlineColor='#005374'
                         />
 
                         <TextInput
@@ -36,9 +41,12 @@ export const Login = () => {
                             autoCapitalize='none'
                             textContentType="password"
                             secureTextEntry={true}
+                            mode="outlined"
+                            selectionColor='#005374'
+                            activeOutlineColor='#005374'
 
                         />
-                        <Button onPress={handleSubmit} title="Submit" />
+                        <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'> Log In</Button>
                     </View>
                 </View>
 
@@ -58,13 +66,14 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: "center",
-        height: '20%',
+        height: '40%',
         width: '90%'
 
     },
     textInput: {
         // backgroundColor: 'red',
-        width: '100%'
+        width: '100%',
+        // marginBottom: '10pt'
 
 
     }
