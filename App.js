@@ -18,17 +18,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import { loadUser } from './src/actions/authActions.js';
 import { Admin } from './src/screens/Admin/Admin.jsx';
 import { CustomNavigationBar } from './src/Components/CustomNavigationBar.jsx';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { DefaultTheme,Provider as PaperProvider } from 'react-native-paper';
 import { Profile } from './src/screens/Profile/Profile.jsx';
 import { AuthStackNavigatior } from './src/navigation/AuthStackNavigatior.jsx';
 
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#005374',
+    accent: '#f1c40f',
+  },
+};
 
 const AppWrapper = () => {
 
   return (
 <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-      <PaperProvider>
+      <PaperProvider theme={theme}>
       <App />
       </PaperProvider>
       </PersistGate>

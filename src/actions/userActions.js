@@ -42,7 +42,7 @@ export const getUsers = () => (dispatch, getState) => {
     );
 };
 
-export const addUser = (user) => (dispatch, getState) => {
+export const addUser = (user, navigation) => (dispatch, getState) => {
   // console.log(user)
   dispatch({
     type: IS_LOADING,
@@ -65,11 +65,16 @@ export const addUser = (user) => (dispatch, getState) => {
     })
     .catch((err) =>
     {
-      console.log(err)
-    }    );
+      console.log(err.response.data)
+    }    )
+    .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
-export const editUser = (user, reloadUser) => (dispatch, getState) => {
+export const editUser = (user, reloadUser,navigation) => (dispatch, getState) => {
   const id = user.id;
   delete user.id;
   dispatch({
@@ -98,7 +103,12 @@ export const editUser = (user, reloadUser) => (dispatch, getState) => {
     .catch((err) =>
     {
       console.log(err)
-    }    );
+    }    )
+    .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const markUserNotificationAsRead = (user, notification) => (

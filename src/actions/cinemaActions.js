@@ -8,8 +8,7 @@ import {
   FINISHED_LOADING,
 } from "./types";
 import { tokenConfig } from "./authActions";
-import { returnErrors } from "./errorActions";
-import { sendNotification } from "../helper/notifier";
+// import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
 
 // import { IItem } from '../../types/interfaces';
@@ -36,11 +35,11 @@ export const getCinemas = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
-    );
+console.log(err)
+);
 };
 
-export const addCinema = (cinema) => (dispatch, getState) => {
+export const addCinema = (cinema,navigation) => (dispatch, getState) => {
   // console.log(cinema)
   dispatch({
     type: IS_LOADING,
@@ -55,7 +54,9 @@ export const addCinema = (cinema) => (dispatch, getState) => {
 
   if (files) {
     for (var x = 0; x < files.length; x++) {
-      formData.append("certificates", files[x]);
+      let file = files[x]
+      file.uri = Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
+      formData.append("certificates", file);
     }
   }
 
@@ -73,14 +74,18 @@ export const addCinema = (cinema) => (dispatch, getState) => {
         payload: true,
       });
 
-      sendNotification("Cinema Added Successfully", "success");
+      // sendNotification("Cinema Added Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    console.log(err)
+    )   .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
-export const editCinema = (cinema) => (dispatch, getState) => {
+export const editCinema = (cinema,navigation) => (dispatch, getState) => {
   const id = cinema.id;
   delete cinema.id;
 
@@ -90,18 +95,23 @@ export const editCinema = (cinema) => (dispatch, getState) => {
   });
 
   const files = cinema.certificates;
-  delete cinema.certificates;
+  // delete cinema.certificates;
 
-  const formData = new FormData();
-  Object.keys(cinema).forEach((key) => formData.append(key, cinema[key]));
+  // const formData = new FormData();
+  // Object.keys(cinema).forEach((key) => formData.append(key, cinema[key]));
 
-  if (files) {
-    for (var x = 0; x < files.length; x++) {
-      formData.append("certificates", files[x]);
-    }
-  }
+  // console.log(cinema)
+  // if (files) {
+  //   for (var x = 0; x < files.length; x++) {
+  //     let file = files[x]
+  //     file.uri = Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
+  //     formData.append("certificates", file);
+  //   }
+  // }
+  // formData.append("certificates", [])
+  // console.log(formData)
   axios
-    .put(URL+"/api/cinemas/" + id, formData, tokenConfig(getState))
+    .put(URL+"/api/cinemas/" + id, cinema, tokenConfig(getState))
     .then((res) => {
       // console.log(res)
       dispatch({
@@ -113,11 +123,15 @@ export const editCinema = (cinema) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Cinema Edited Successfully", "success");
+      // sendNotification("Cinema Edited Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    console.log(err.response.data)
+    ).finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const deleteCinema = (cinema) => (dispatch, getState) => {
@@ -138,9 +152,9 @@ export const deleteCinema = (cinema) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Cinema Deleted Successfully", "success");
+      // sendNotification("Cinema Deleted Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err)
     );
 };

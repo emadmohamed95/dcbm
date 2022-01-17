@@ -9,8 +9,7 @@ import {
   FINISHED_LOADING,
 } from "./types";
 import { tokenConfig } from "./authActions";
-import { returnErrors } from "./errorActions";
-import { sendNotification } from "../helper/notifier";
+// import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
 
 // import { IItem } from '../../types/interfaces';
@@ -37,11 +36,12 @@ export const getCountries = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
+      // dispatch(returnErrors(err.response.data, err.response.status))
+      console.log(err)
     );
 };
 
-export const addCountry = (country) => (dispatch, getState) => {
+export const addCountry = (country,navigation) => (dispatch, getState) => {
   // console.log(country)
   dispatch({
     type: IS_LOADING,
@@ -60,14 +60,20 @@ export const addCountry = (country) => (dispatch, getState) => {
         payload: true,
       });
 
-      sendNotification("Country Added Successfully", "success");
+      // sendNotification("Country Added Successfully", "success");
     })
-    .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    .catch((err) =>{
+    console.log(err)
+    }
+    )
+    .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
-export const editCountry = (country) => (dispatch, getState) => {
+export const editCountry = (country,navigation) => (dispatch, getState) => {
   const id = country.id;
   delete country.id;
   dispatch({
@@ -86,11 +92,16 @@ export const editCountry = (country) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Country Edited Successfully", "success");
+      // sendNotification("Country Edited Successfully", "success");
     })
-    .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    .catch((err) =>{
+    console.log(err)
+    })
+    .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const deleteCountry = (country) => (dispatch, getState) => {
@@ -111,9 +122,9 @@ export const deleteCountry = (country) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Country Deleted Successfully", "success");
+      // sendNotification("Country Deleted Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err)
     );
 };

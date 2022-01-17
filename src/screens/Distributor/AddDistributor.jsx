@@ -1,16 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, SafeAreaView } from 'react-native'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from "yup";
 import { addUser, editUser } from '../../actions/userActions';
-import { forEach as _forEach, union as _union } from "lodash";
+import { forEach as _forEach, union as _union, differenceWith as _differenceWith } from "lodash";
 import { Formik, FieldArray } from 'formik';
-import { TextInput, Button, Divider, Title, HelperText } from 'react-native-paper';
+import { TextInput, Button, Divider, Title, HelperText, IconButton } from 'react-native-paper';
 import DropDown from "react-native-paper-dropdown";
 import MultiSelect from 'react-native-multiple-select';
 import { ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import { getCountries } from '../../actions/countryActions'
 
 // const items = [
 //     {
@@ -52,12 +53,16 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 
 
-export const AddAdmin = ({route,navigation }) => {
+export const Adddistributor = ({ route, navigation }) => {
     const dispatch = useDispatch()
-    const { user } = route?.params?route.params:{};
-    console.log(user)
-
+    const [selectedCountries, setselectedCountries] = useState([])
+    const { user } = route?.params ? route.params : {};
     const phoneRegExp = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/
+
+    const email = Yup.object({
+        id: Yup.number().nullable(),
+        email: Yup.string().email("Invalid email")
+    });
 
     const schema = Yup.object().shape({
         username: Yup.string()
@@ -72,60 +77,36 @@ export const AddAdmin = ({route,navigation }) => {
                 .required("Required"),
 
         email: Yup.string().email("Invalid email").required("Required"),
+
+        email2: Yup.string().email("Invalid email"),
         name: Yup.string().required("Required"),
-        phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid')
+        phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
+        countries: Yup.array().required("Required"),
+        emails: Yup.array().of(email).nullable()
     });
 
-    const [showPassword, setShowPassword] = useState(false);
-    // const [permissions, setPermissions] = useState([]);
+
+    useEffect(() => {
+        dispatch(getCountries())
+    }, [])
+
+    const countries = useSelector(state => state.country.countries)
+    console.log(countries)
 
 
-    const permToTextMap = {
-        "AssignToDistributor": "Assign Movie To Distributor",
-        "LoadDkdms": "Upload DKDMs"
-    }
-
-    const textToPermMap = {
-        "Assign Movie To Distributor": "AssignToDistributor",
-        "Upload DKDMs": "LoadDkdms"
-    }
+    useEffect(() => {
+        if (user) {
+            setselectedCountries(user.countries ? user.countries.map(country => country.id) : [])
+        }
+    }, [user])
 
     const handleOnSubmit = (values, { setSubmitting }) => {
-
         const userPermissions = {
-            distributors_Add: true,
-            distributors_Edit: true,
-            distributors_Delete: true,
-            // distributors_EnableOrDisable: true,
-
-            producers_Add: true,
-            producers_Edit: true,
-            producers_Delete: true,
-            // producers_EnableOrDisable: true,
-
-            countries_Add: true,
-            countries_Edit: true,
-            countries_Delete: true,
-            // countries_EnableOrDisable: true,
-
-            cinemas_Add: true,
-            cinemas_Edit: true,
-            cinemas_Delete: true,
-            // cinemas_EnableOrDisable: true,
-
-            screens_Add: true,
-            screens_Edit: true,
-            screens_Delete: true,
-            // screens_EnableOrDisable: true,
-
-            movies_Add: true,
-            movies_Edit: true,
-            movies_Delete: true,
-            // movies_EnableOrDisable: true,
-            movies_AssignToDistributor: true,
-            movies_LoadDkdms: true,
+            movies_AssignToCinema: true,
+            movies_GenerateKdms: true,
+            movies_SendKdmsNotification: true,
+            movies_Request: true,
         };
-
         const finalValues = {
             ...values,
             ...{
@@ -133,163 +114,58 @@ export const AddAdmin = ({route,navigation }) => {
             },
         };
 
+        console.log(finalValues)
+
         if (user) {
+            const toBeRemovedValues = _differenceWith(
+                user.countries,
+                values.countries,
+                (arrValue, othValue) => arrValue.id == othValue.id
+            );
+
+            const toBeAddedValues = _differenceWith(
+                values.countries,
+                user.countries,
+                (arrValue, othValue) => arrValue.id == othValue.id
+            );
+
+            finalValues.countries = toBeAddedValues;
+            finalValues.removedCountries = toBeRemovedValues;
+
+
+
+            const toBeRemovedEmails = _differenceWith(
+                user.emails,
+                values.emails,
+                (arrValue, othValue) => arrValue.email == othValue.email
+            );
+
+            const toBeAddedEmails = _differenceWith(
+                values.emails,
+                user.emails,
+                (arrValue, othValue) => arrValue.email == othValue.email
+            );
+
+            finalValues.emails = toBeAddedEmails;
+            finalValues.removedEmails = toBeRemovedEmails;
+
             if (finalValues.password == "") {
                 delete finalValues.password;
             }
 
+            // console.log(finalValues)
+
             dispatch(editUser(finalValues,false,navigation));
         } else {
+
+            // console.log(finalValues)
             dispatch(addUser(finalValues,navigation));
         }
 
         setSubmitting(false);
-        // navigation.navigate('Admins')
-        };
-
-    const userPermissions = {
-        distributors_Add: false,
-        distributors_Edit: false,
-        distributors_Delete: false,
-        // distributors_EnableOrDisable: false,
-
-        producers_Add: false,
-        producers_Edit: false,
-        producers_Delete: false,
-        // producers_EnableOrDisable: false,
-
-        countries_Add: false,
-        countries_Edit: false,
-        countries_Delete: false,
-        // countries_EnableOrDisable: false,
-
-        cinemas_Add: false,
-        cinemas_Edit: false,
-        cinemas_Delete: false,
-        // cinemas_EnableOrDisable: false,
-
-        screens_Add: false,
-        screens_Edit: false,
-        screens_Delete: false,
-        // screens_EnableOrDisable: false,
-
-        movies_Add: false,
-        movies_Edit: false,
-        movies_Delete: false,
-        // movies_EnableOrDisable: false,
-        movies_AssignToDistributor: false,
-        movies_LoadDkdms: false,
     };
 
-    const handleSelectAll = (permissions, isChecked, setFieldValue) => {
-        if (isChecked) {
-            permissions.forEach((perm) => {
-                perm.values = _union(perm.values, perm.options);
-            });
-        } else {
-            permissions.forEach((perm) => {
-                perm.values = [];
-            });
-        }
 
-        setFieldValue("values.permissions", permissions);
-    };
-
-    const convertPermissionsObjectToValueArray = (permissions) => {
-        const transformedPermissions = [
-            {
-                type: "distributors",
-                options: [{ name: "Add" }, { name: "Edit" }, { name: "Delete" }],
-                values: [],
-            },
-            {
-                type: "producers",
-                options: ["Add", "Edit", "Delete"],
-                values: [],
-            },
-            {
-                type: "countries",
-                options: ["Add", "Edit", "Delete"],
-                values: [],
-            },
-            {
-                type: "cinemas",
-                options: ["Add", "Edit", "Delete"],
-                values: [],
-            },
-            {
-                type: "screens",
-                options: ["Add", "Edit", "Delete"],
-                values: [],
-            },
-            {
-                type: "movies",
-                options: ["Add", "Edit", "Delete", "Assign Movie To Distributor", "Upload DKDMs"],
-                values: [],
-            },
-        ];
-
-        _forEach(permissions, function (value, key) {
-            const splitted = key.split("_");
-
-            const type = splitted[0];
-
-            if (value) {
-                transformedPermissions.forEach((perm) => {
-                    if (perm.type == type) {
-                        perm.values.push(permToTextMap[splitted[1]] ? permToTextMap[splitted[1]] : splitted[1]);
-                    }
-                });
-            }
-        });
-        console.log(transformedPermissions)
-
-        return transformedPermissions;
-    };
-
-    const convertValueArrayToPermissionsObjects = (transformedPermissions) => {
-        const userPermissions = {
-            distributors_Add: false,
-            distributors_Edit: false,
-            distributors_Delete: false,
-            // distributors_EnableOrDisable: false,
-
-            producers_Add: false,
-            producers_Edit: false,
-            producers_Delete: false,
-            // producers_EnableOrDisable: false,
-
-            countries_Add: false,
-            countries_Edit: false,
-            countries_Delete: false,
-            // countries_EnableOrDisable: false,
-
-            cinemas_Add: false,
-            cinemas_Edit: false,
-            cinemas_Delete: false,
-            // cinemas_EnableOrDisable: false,
-
-            screens_Add: false,
-            screens_Edit: false,
-            screens_Delete: false,
-            // screens_EnableOrDisable: false,
-
-            movies_Add: false,
-            movies_Edit: false,
-            movies_Delete: false,
-            // movies_EnableOrDisable: false,
-            movies_AssignToDistributor: false,
-            movies_LoadDkdms: false,
-        };
-
-        transformedPermissions.forEach((tperm) => {
-            tperm.values.forEach((value) => {
-                userPermissions[`${tperm.type}_${textToPermMap[value] ? textToPermMap[value] : value}`] = true;
-            });
-        });
-
-        return userPermissions;
-    };
 
     const initialValues = user
         ? {
@@ -303,11 +179,13 @@ export const AddAdmin = ({route,navigation }) => {
             username: "",
             password: "",
             email: "",
+            email2: "",
             name: "",
             phone: "",
             enabled: true,
-            type: "Admin",
-            // permissions: convertPermissionsObjectToValueArray(userPermissions),
+            type: "Distributor",
+            countries: [],
+            emails: [],          // permissions: convertPermissionsObjectToValueArray(userPermissions),
         };
 
     return (
@@ -350,9 +228,9 @@ export const AddAdmin = ({route,navigation }) => {
                                 activeOutlineColor='#005374'
 
                                 error={errors.password && touched.password}
-                                />
-                                <HelperText type="error" visible={errors.password&& touched.password}>{errors.password}</HelperText>
-    
+                            />
+                            <HelperText type="error" visible={errors.password && touched.password}>{errors.password}</HelperText>
+
 
                             <TextInput
                                 onChangeText={handleChange('email')}
@@ -365,9 +243,23 @@ export const AddAdmin = ({route,navigation }) => {
                                 selectionColor='#005374'
                                 activeOutlineColor='#005374'
                                 error={errors.email && touched.email}
-                                />
-                                <HelperText type="error" visible={errors.email&& touched.email}>{errors.email}</HelperText>
-    
+                            />
+                            <HelperText type="error" visible={errors.email && touched.email}>{errors.email}</HelperText>
+
+                            <TextInput
+                                onChangeText={handleChange('email2')}
+                                onBlur={handleBlur('email2')}
+                                value={values.email2}
+                                style={styles.textInput}
+                                placeholder='email2'
+                                autoCapitalize='none'
+                                mode="outlined"
+                                selectionColor='#005374'
+                                activeOutlineColor='#005374'
+                                error={errors.email2 && touched.email2}
+                            />
+                            <HelperText type="error" visible={errors.email2 && touched.email2}>{errors.email2}</HelperText>
+
 
                             <TextInput
                                 onChangeText={handleChange('name')}
@@ -380,9 +272,9 @@ export const AddAdmin = ({route,navigation }) => {
                                 selectionColor='#005374'
                                 activeOutlineColor='#005374'
                                 error={errors.name && touched.name}
-                                />
-                                <HelperText type="error" visible={errors.name&& touched.name}>{errors.name}</HelperText>
-    
+                            />
+                            <HelperText type="error" visible={errors.name && touched.name}>{errors.name}</HelperText>
+
 
                             <TextInput
                                 onChangeText={handleChange('phone')}
@@ -395,42 +287,100 @@ export const AddAdmin = ({route,navigation }) => {
                                 selectionColor='#005374'
                                 activeOutlineColor='#005374'
                                 error={errors.phone && touched.phone}
-                                />
-                                <HelperText type="error" visible={errors.phone&& touched.phone}>{errors.phone}</HelperText>
-    
-
-                            {/* <View styles={{width:'100%'}}>  */}
-                            {/* <SectionedMultiSelect
-                                items={values.permissions}
-                                IconRenderer={Icon}
-                                modalWithSafeAreaView
-                                uniqueKey="type"
-                                subKey="options"
-                                selectText="Permisions"
-                                showDropDowns={true}
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={items => {console.log(items)
-                                setPermissions(items)}
-                                }
-                                selectedItems={permissions}
-                                styles={{width:'100%'}}
-                            /> */}
-                            {/* <SectionedMultiSelect
-                                items={items}
-                                IconRenderer={Icon}
-                                modalWithSafeAreaView
-                                uniqueKey="name"
-                                subKey="children"
-                                selectText="Permisions"
-                                showDropDowns={true}
-                                readOnlyHeadings={true}
-                                onSelectedItemsChange={items => {console.log(items)
-                                setPermissions(items)}
-                                }
-                                selectedItems={permissions}
-                                styles={{width:'100%'}}
                             />
-                            </View> */}
+                            <HelperText type="error" visible={errors.phone && touched.phone}>{errors.phone}</HelperText>
+
+                            <View style={{ width: '100%'}}>
+                                <SectionedMultiSelect
+                                    items={countries}
+                                    IconRenderer={Icon}
+                                    modalWithSafeAreaView
+                                    uniqueKey="id"
+                                    subKey="children"
+                                    selectText={"Restrict user to countries"}
+                                    selectedText={"Countries"}
+                                    searchPlaceholderText={'Search Countries'}
+
+                                    showCancelButton
+                                    // showDropDowns={true}
+                                    // readOnlyHeadings={true}
+                                    onSelectedItemsChange={(items) => { setselectedCountries(items) }}
+                                    onSelectedItemObjectsChange={items => {
+                                        setFieldValue('countries', items)
+                                    }
+                                    }
+                                    selectedItems={selectedCountries}
+                                    showRemoveAll
+                                    colors={{primary:'#005374'}}
+                                    // styles={{ selectToggle:{width: '100%', backgroundColor:'red'} }}
+                                />
+
+                            </View>
+
+
+                            <View style={{ marginBottom:20, marginTop:20 }}>
+
+                            <FieldArray
+                                name="emails"
+                                render={(arrayHelpers) => (
+
+                                    <>
+
+                                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                            <Title>
+                                                Additional Emails
+                                            </Title>
+                                            <IconButton
+                                                icon="plus"
+                                                color={'#005374'}
+                                                // size={20}
+                                                onPress={() => arrayHelpers.push({ email: "" })}
+                                            />
+                                        </View>
+                                        {values.emails.map((email, index) => (
+
+                                            <View style={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
+                                                {/* <Field
+                                                    name={`emails[${index}].email`}
+                                                    component={TextField}
+                                                    label="Email"
+                                                    type="email"
+                                                /> */}
+
+                                                <TextInput
+                                                    onChangeText={text => setFieldValue(
+                                                        `emails[${index}].email`,
+                                                        text)}
+                                                    onBlur={handleBlur(`emails[${index}].email`)}
+                                                    value={values.emails[index].email}
+                                                    style={styles.emailTextInput}
+                                                    placeholder='email'
+                                                    autoCapitalize='none'
+                                                    // mode="outlined"
+                                                    selectionColor='#005374'
+                                                    activeOutlineColor='#005374'
+                                                    dense
+                                                />
+
+                                                <IconButton
+                                                    icon="delete"
+                                                    color={'#005374'}
+                                                    size={20}
+                                                    onPress={() => arrayHelpers.remove(index)}
+                                                />
+
+                                            </View>
+
+                                        ))}
+
+                                    </>
+                                )}
+                            />
+                                                        </View>
+
+
+
+                            
 
                             {/* <FieldArray
                                 name="permissions"
@@ -515,22 +465,24 @@ export const AddAdmin = ({route,navigation }) => {
 
 
                             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                                <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'> {user?"Edit":"Add"} Admin</Button>
+                                <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'> {user?"Edit":"Add"} distributor</Button>
                                 <Button onPress={navigation.goBack} mode='default' color='#005374'>Cancel</Button>
                             </View>
                         </View>
                     </View>
 
-                )}
-            </Formik>
-        </ScrollView>
+                )
+                }
+            </Formik >
+        </ScrollView >
     )
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         // justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        marginBottom: 50
     },
     div: {
         display: 'flex',
@@ -544,6 +496,14 @@ const styles = StyleSheet.create({
     textInput: {
         // backgroundColor: 'red',
         width: '100%',
+        marginTop: 20
+
+
+    },
+
+    emailTextInput: {
+        // backgroundColor: 'red',
+        width: '75%',
         marginTop: 20
 
 

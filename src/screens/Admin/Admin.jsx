@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
@@ -12,8 +12,10 @@ const optionsPerPage = [5, 10, 20];
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
-const UserRow = ({ admin }) => {
+const UserRow = ({ admin, navigation }) => {
     const [hidden, sethidden] = useState(true)
+    const dispatch = useDispatch()
+
     return (
         <><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
             <DataTable.Cell>{admin.username}</DataTable.Cell>
@@ -23,16 +25,18 @@ const UserRow = ({ admin }) => {
                 icon="pencil"
                 color={'#005374'}
                 size={20}
-                onPress={() => console.log('Pressed')}
+                onPress={() => navigation.navigate('AddAdmin', {
+                    user: admin
+                })}
             />
             <IconButton
                 icon="delete"
                 color={'#005374'}
                 size={20}
-                onPress={() => dispatch(deleteUser(user))}
+                onPress={() => dispatch(deleteUser(admin))}
             />
         </DataTable.Row>
-            <DetailsCard title={admin.username} hidden={hidden} user={admin}></DetailsCard>
+            {/* <DetailsCard title={admin.username} hidden={hidden} user={admin}></DetailsCard> */}
         </>
     )
 }
@@ -41,29 +45,29 @@ const DetailsCard = ({ title, hidden, user }) => {
     const dispatch = useDispatch()
 
     return (
-        !hidden ?<>
-        <View style={{ display:'flex', justifyContent:'center', alignItems:'center'}}>
-        <View style={{width:'75%'}}>
-    <DataTable>
-      <DataTable.Header>
-        <DataTable.Title>Dessert</DataTable.Title>
-        <DataTable.Title numeric>Calories</DataTable.Title>
-        <DataTable.Title numeric>Fat</DataTable.Title>
-      </DataTable.Header>
+        !hidden ? <>
+            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ width: '75%' }}>
+                    <DataTable>
+                        <DataTable.Header>
+                            <DataTable.Title>Dessert</DataTable.Title>
+                            <DataTable.Title numeric>Calories</DataTable.Title>
+                            <DataTable.Title numeric>Fat</DataTable.Title>
+                        </DataTable.Header>
 
-      <DataTable.Row>
-        <DataTable.Cell>Frozen yogurt</DataTable.Cell>
-        <DataTable.Cell numeric>159</DataTable.Cell>
-        <DataTable.Cell numeric>6.0</DataTable.Cell>
-      </DataTable.Row>
+                        <DataTable.Row>
+                            <DataTable.Cell>Frozen yogurt</DataTable.Cell>
+                            <DataTable.Cell numeric>159</DataTable.Cell>
+                            <DataTable.Cell numeric>6.0</DataTable.Cell>
+                        </DataTable.Row>
 
-      <DataTable.Row>
-        <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-        <DataTable.Cell numeric>237</DataTable.Cell>
-        <DataTable.Cell numeric>8.0</DataTable.Cell>
-      </DataTable.Row>
+                        <DataTable.Row>
+                            <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
+                            <DataTable.Cell numeric>237</DataTable.Cell>
+                            <DataTable.Cell numeric>8.0</DataTable.Cell>
+                        </DataTable.Row>
 
-      {/* <DataTable.Pagination
+                        {/* <DataTable.Pagination
         page={page}
         numberOfPages={3}
         onPageChange={(page) => setPage(page)}
@@ -74,13 +78,13 @@ const DetailsCard = ({ title, hidden, user }) => {
         showFastPagination
         optionsLabel={'Rows per page'}
       /> */}
-    </DataTable>
-    </View>
-            </View></>: <></>
+                    </DataTable>
+                </View>
+            </View></> : <></>
     )
 }
 
-export const Admin = ({navigation}) => {
+export const Admin = ({ navigation }) => {
 
     const [page, setPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(optionsPerPage[0]);
@@ -89,20 +93,34 @@ export const Admin = ({navigation}) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        setPage(0);
-    }, [itemsPerPage]);
-
-    useEffect(() => {
         dispatch(getUsers());
     }, [getUsers]);
+
+
 
     const users = useSelector(state => state.user.users)
     // const admins = users
     const admins = users.filter((user) => user.type.name == "Admin")
 
+    // useEffect(() => {
+    //     setPaginatedData(users.filter((user) => user.type.name == "Admin"))
+    // }, [users]);
 
     const from = page * itemsPerPage;
     const to = Math.min((page + 1) * itemsPerPage, admins.length);
+
+
+    useEffect(() => {
+        setPage(0);
+        const from = page * itemsPerPage;
+    const to = Math.min((page + 1) * itemsPerPage, admins.length);
+    setPaginatedData(admins.slice(from, to))
+    }, [itemsPerPage]);
+
+
+    useEffect(() => {
+        setPaginatedData(admins.slice(from, to))
+    }, [users]);
 
     useEffect(() => {
         setPaginatedData(admins.slice(from, to))
@@ -111,7 +129,7 @@ export const Admin = ({navigation}) => {
     console.log(admins)
 
     return (
-        <>
+        <ScrollView>
             {/* <FAB
                 style={styles.fab}
 
@@ -138,31 +156,22 @@ export const Admin = ({navigation}) => {
                 </DataTable.Header>
 
                 {paginatedData.map((admin, i) => (
-                    <UserRow admin={admin} key={i}></UserRow>
+                    <UserRow admin={admin} key={i} navigation={navigation}></UserRow>
                 ))}
-
-
-
-                {/* <DataTable.Row>
-        <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-        <DataTable.Cell numeric>237</DataTable.Cell>
-        <DataTable.Cell numeric>8.0</DataTable.Cell>
-      </DataTable.Row> */}
 
                 <DataTable.Pagination
                     page={page}
                     numberOfPages={Math.ceil(admins.length / itemsPerPage)}
                     onPageChange={page => setPage(page)}
                     label={`${from + 1}-${to} of ${admins.length}`} optionsPerPage={optionsPerPage}
-                    itemsPerPage={itemsPerPage}
-                    setItemsPerPage={setItemsPerPage}
+                    showFastPaginationControls
                     numberOfItemsPerPageList={optionsPerPage}
                     numberOfItemsPerPage={itemsPerPage}
-                    showFastPagination
-                    optionsLabel={'Rows per page'}
+                    onItemsPerPageChange={setItemsPerPage}
+                // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
-        </>
+        </ScrollView>
     )
 }
 

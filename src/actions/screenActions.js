@@ -9,8 +9,7 @@ import {
   GET_CINEMAS,
 } from "./types";
 import { tokenConfig } from "./authActions";
-import { returnErrors } from "./errorActions";
-import { sendNotification } from "../helper/notifier";
+// import { sendNotification } from "../helper/notifier";
 import { getCinemas } from "./cinemaActions";
 import { URL } from "../constants/constants";
 
@@ -37,11 +36,11 @@ export const getScreens = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
+    console.log(err)
     );
 };
 
-export const addScreen = (screen) => (dispatch, getState) => {
+export const addScreen = (screen,navigation) => (dispatch, getState) => {
   // console.log(screen)
 
   // const {serverCertificate} = screen;
@@ -52,6 +51,17 @@ export const addScreen = (screen) => (dispatch, getState) => {
   //  const finalScreen = {...screen, ...{serverCertificate:file}}
 
   //  console.log(finalScreen);
+
+
+  // if (files) {
+  //   for (var x = 0; x < files.length; x++) {
+  //     let file = files[x]
+  //     file.uri = Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
+  //     formData.append("certificates", file);
+  //   }
+  // }
+
+  screen.serverCertificate.uri = Platform.OS === 'android' ? screen.serverCertificate.uri : screen.serverCertificate.uri.replace('file://', '')
 
   const formData = new FormData();
   Object.keys(screen).forEach((key) => formData.append(key, screen[key]));
@@ -73,26 +83,30 @@ export const addScreen = (screen) => (dispatch, getState) => {
       });
       dispatch(getCinemas());
 
-      sendNotification("Screen Added Successfully", "success");
+      // sendNotification("Screen Added Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    console.log(err.response.data)
+    ) .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
-export const editScreen = (screen) => (dispatch, getState) => {
+export const editScreen = (screen,navigation) => (dispatch, getState) => {
   const id = screen.id;
   delete screen.id;
 
-  const formData = new FormData();
-  Object.keys(screen).forEach((key) => formData.append(key, screen[key]));
+  // const formData = new FormData();
+  // Object.keys(screen).forEach((key) => formData.append(key, screen[key]));
 
   dispatch({
     type: IS_LOADING,
     payload: true,
   });
   axios
-    .put(URL+"/api/screens/" + id, formData, tokenConfig(getState))
+    .put(URL+"/api/screens/" + id, screen, tokenConfig(getState))
     .then((res) => {
       // console.log(res)
       dispatch({
@@ -104,11 +118,15 @@ export const editScreen = (screen) => (dispatch, getState) => {
         payload: true,
       });
       dispatch(getCinemas());
-      sendNotification("Screen Edited Successfully", "success");
+      // sendNotification("Screen Edited Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    console.log(err.response.data)
+    ) .finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const deleteScreen = (screen) => (dispatch, getState) => {
@@ -130,9 +148,9 @@ export const deleteScreen = (screen) => (dispatch, getState) => {
         payload: true,
       });
       dispatch(getCinemas());
-      sendNotification("Screen Deleted Successfully", "success");
+      // sendNotification("Screen Deleted Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err)
     );
 };
