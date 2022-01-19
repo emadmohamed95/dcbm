@@ -18,8 +18,7 @@ import {
   GET_MOVIE_USERS
 } from "./types";
 import { tokenConfig,nonStatetokenConfig } from "./authActions";
-import { returnErrors } from "./errorActions";
-import { sendNotification } from "../helper/notifier";
+// import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
 
 // import { IItem } from '../../types/interfaces';
@@ -47,11 +46,11 @@ export const getMovies = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
+    console.log(err.response.data)
     );
 };
 
-export const addMovie = (movie) => (dispatch, getState) => {
+export const addMovie = (movie,navigation) => (dispatch, getState) => {
   // console.log(movie)
   dispatch({
     type: IS_LOADING,
@@ -66,7 +65,9 @@ export const addMovie = (movie) => (dispatch, getState) => {
 
   if (files) {
     for (var x = 0; x < files.length; x++) {
-      formData.append("dkdm", files[x]);
+      let file = files[x]
+      file.uri = Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
+      formData.append("dkdm", file);
     }
   }
 
@@ -87,14 +88,18 @@ export const addMovie = (movie) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Added Successfully", "success");
+      // sendNotification("Movie Added Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    console.log(err.response.data)
+    ).finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
-export const editMovie = (movie) => (dispatch, getState) => {
+export const editMovie = (movie,navigation) => (dispatch, getState) => {
   dispatch({
     type: IS_LOADING,
     payload: true,
@@ -109,9 +114,17 @@ export const editMovie = (movie) => (dispatch, getState) => {
   const formData = new FormData();
   Object.keys(movie).forEach((key) => formData.append(key, movie[key]));
 
+  // if (files) {
+  //   for (var x = 0; x < files.length; x++) {
+  //     formData.append("dkdm", files[x]);
+  //   }
+  // }
+
   if (files) {
     for (var x = 0; x < files.length; x++) {
-      formData.append("dkdm", files[x]);
+      let file = files[x]
+      file.uri = Platform.OS === 'android' ? file.uri : file.uri.replace('file://', ''),
+      formData.append("dkdm", file);
     }
   }
 
@@ -128,11 +141,15 @@ export const editMovie = (movie) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Edited Successfully", "success");
+      // sendNotification("Movie Edited Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+    console.log(err.response.data)
+    ).finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const deleteMovie = (movie) => (dispatch, getState) => {
@@ -154,10 +171,10 @@ export const deleteMovie = (movie) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Deleted Successfully", "success");
+      // sendNotification("Movie Deleted Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -169,7 +186,7 @@ export const requestMovie = (movie, user) => (dispatch, getState) => {
   });
 
   axios
-    .post(`/api/movies/${id}/request-movie`, { user }, tokenConfig(getState))
+    .post(URL+`/api/movies/${id}/request-movie`, { user }, tokenConfig(getState))
     .then((res) => {
       // console.log(res)
 
@@ -184,7 +201,7 @@ export const requestMovie = (movie, user) => (dispatch, getState) => {
       // sendNotification('Movie Edited Successfully','success');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -196,7 +213,7 @@ export const assignMovie = (movie, values) => (dispatch, getState) => {
     payload: true,
   });
   axios
-    .post(`/api/movies/${id}/assign-movie`, values, tokenConfig(getState))
+    .post(URL+`/api/movies/${id}/assign-movie`, values, tokenConfig(getState))
     .then((res) => {
       dispatch({
         type: ASSIGN_MOVIE_CINEMAS,
@@ -206,10 +223,10 @@ export const assignMovie = (movie, values) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Assigned to Cinemas Successfully", "success");
+      // sendNotification("Movie Assigned to Cinemas Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -222,7 +239,7 @@ export const deassignMovie = (movie, cinemaMovies) => (dispatch, getState) => {
   });
   axios
     .post(
-      `/api/movies/${id}/deassign-movie`,
+      URL+`/api/movies/${id}/deassign-movie`,
       { cinemaMovies },
       tokenConfig(getState)
     )
@@ -237,13 +254,13 @@ export const deassignMovie = (movie, cinemaMovies) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification(
-        "Movie Versions Deassigned to Cinemas Successfully",
-        "success"
-      );
+      // sendNotification(
+      //   "Movie Versions Deassigned to Cinemas Successfully",
+      //   "success"
+      // );
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -259,7 +276,7 @@ export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema) => (
   });
   axios
     .post(
-      `/api/movies/${id}/distribute-movie`,
+      URL+`/api/movies/${id}/distribute-movie`,
       { movie, user, cinemaMovies, sendKdmToCinema },
       tokenConfig(getState)
     )
@@ -278,7 +295,7 @@ export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema) => (
       // sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -294,7 +311,7 @@ export const sendKdms = (cinemaMovies, movie, user, sendKdmToCinema) => (
   });
   axios
     .post(
-      `/api/movies/${id}/send-kdms`,
+      URL+`/api/movies/${id}/send-kdms`,
       { cinemaMovies, movie, user, sendKdmToCinema },
       tokenConfig(getState)
     )
@@ -310,10 +327,10 @@ export const sendKdms = (cinemaMovies, movie, user, sendKdmToCinema) => (
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie KDMs are being Sent", "info");
+      // sendNotification("Movie KDMs are being Sent", "info");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -324,7 +341,7 @@ export const getMovieVersions = (movie) => (dispatch, getState) => {
     payload: true,
   });
   axios
-    .get(`/api/movies/${movie.id}/versions`, tokenConfig(getState))
+    .get(URL+`/api/movies/${movie.id}/versions`, tokenConfig(getState))
     .then((res) => {
       // console.log(res)
 
@@ -339,7 +356,7 @@ export const getMovieVersions = (movie) => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status))
+    console.log(err.response.data)
     );
 };
 
@@ -360,7 +377,7 @@ export const addMovieVersion = (movieVersion) => (dispatch, getState) => {
   });
 
   axios
-    .post(`/api/movies/${id}/versions`, formData, tokenConfig(getState))
+    .post(URL+`/api/movies/${id}/versions`, formData, tokenConfig(getState))
     .then((res) => {
       // console.log(res)
 
@@ -374,10 +391,10 @@ export const addMovieVersion = (movieVersion) => (dispatch, getState) => {
         payload: true,
       });
 
-      sendNotification("Movie Version Added Successfully", "success");
+      // sendNotification("Movie Version Added Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -401,7 +418,7 @@ export const editMovieVersion = (movieVersion) => (dispatch, getState) => {
 
   axios
     .put(
-      `/api/movies/${id}/versions/${movieVersionId}`,
+      URL+`/api/movies/${id}/versions/${movieVersionId}`,
       formData,
       tokenConfig(getState)
     )
@@ -416,10 +433,10 @@ export const editMovieVersion = (movieVersion) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Version Edited Successfully", "success");
+      // sendNotification("Movie Version Edited Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -437,7 +454,7 @@ export const deleteMovieVersion = (movie, movieVersion) => (
   });
   axios
     .delete(
-      `/api/movies/${id}/versions/${movieVersionId}`,
+      URL+`/api/movies/${id}/versions/${movieVersionId}`,
       tokenConfig(getState)
     )
     .then((res) => {
@@ -451,10 +468,10 @@ export const deleteMovieVersion = (movie, movieVersion) => (
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Version Deleted Successfully", "success");
+      // sendNotification("Movie Version Deleted Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
@@ -470,7 +487,7 @@ export const distributeMovieVersion = (movieVersion, cinema, user) => (
   });
   axios
     .post(
-      `/api/movies/${id}/versions/${movieVersionId}/distribute-movieVersion`,
+      URL+`/api/movies/${id}/versions/${movieVersionId}/distribute-movieVersion`,
       { cinema, user },
       tokenConfig(getState)
     )
@@ -485,17 +502,17 @@ export const distributeMovieVersion = (movieVersion, cinema, user) => (
         type: FINISHED_LOADING,
         payload: true,
       });
-      sendNotification("Movie Versions KDMs Generated Successfully", "success");
+      // sendNotification("Movie Versions KDMs Generated Successfully", "success");
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
+    console.log(err.response.data)
     );
 };
 
 
 export const getMovieUsers = (id,token) => {
 
-  return axios.get(`/api/movies/${id}/users`, nonStatetokenConfig(token))
+  return axios.get(URL+`/api/movies/${id}/users`, nonStatetokenConfig(token))
 
   // console.log(res)
 
@@ -513,7 +530,7 @@ export const getMovieUsers = (id,token) => {
 
 export const getMoviesAssignedToUser = (id,token) => {
 
-  return axios.get(`/api/movies/users/${id}`, nonStatetokenConfig(token))
+  return axios.get(URL+`/api/movies/users/${id}`, nonStatetokenConfig(token))
 
   // console.log(res)
 
@@ -531,14 +548,14 @@ export const getMoviesAssignedToUser = (id,token) => {
 
 export const getPreviouslyDistributedMovies = (id,token) => {
 
-  return axios.get(`/api/movies/users/${id}/history`, nonStatetokenConfig(token))
+  return axios.get(URL+`/api/movies/users/${id}/history`, nonStatetokenConfig(token))
 
 };
 
 
 export const getMovieVersionsAssignedToUser = (id,uid,token) => {
 
-  return axios.get(`/api/movies/${id}/users/${uid}`, nonStatetokenConfig(token))
+  return axios.get(URL+`/api/movies/${id}/users/${uid}`, nonStatetokenConfig(token))
 
   // console.log(res)
 
@@ -566,7 +583,7 @@ export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate)
   });
   axios
     .post(
-      `/api/movies/${id}/redistribute-movie`,
+      URL+`/api/movies/${id}/redistribute-movie`,
       { movie, user, cinemaMovies,startDate, endDate },
       tokenConfig(getState)
     )
@@ -585,6 +602,5 @@ export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate)
       // sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
-      dispatch(returnErrors(err.response.data, err.response.status, true))
-    );
+console.log(err.response.data)    );
 };

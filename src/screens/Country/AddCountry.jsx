@@ -19,7 +19,7 @@ export const Addcountry = ({ route, navigation }) => {
     const schema = Yup.object().shape({});
 
     const handleOnSubmit = (values, { setSubmitting }) => {
-        console.log(values)
+        // console.log(values)
         if (country) {
             dispatch(editCountry(values, navigation));
 
@@ -80,7 +80,7 @@ export const Addcountry = ({ route, navigation }) => {
                                     // readOnlyHeadings={true}
                                     onSelectedItemsChange={(items) => { setselectedCountry(items) }}
                                     onSelectedItemObjectsChange={items => {
-                                        console.log(items)
+                                        // console.log(items)
                                         setFieldValue(`country`, items[0]);
 
                                         setFieldValue(`name`, items[0].name);

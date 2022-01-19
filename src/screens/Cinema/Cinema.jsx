@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
@@ -85,6 +85,7 @@ export const Cinema = ({navigation}) => {
 
 
     return (
+        <SafeAreaView>
         <ScrollView>
             <DataTable>
                 <DataTable.Header>
@@ -116,6 +117,7 @@ export const Cinema = ({navigation}) => {
             </DataTable>
             
             </ScrollView>
+            </SafeAreaView>
     )
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
@@ -126,9 +126,10 @@ export const Admin = ({ navigation }) => {
         setPaginatedData(admins.slice(from, to))
     }, [page])
 
-    console.log(admins)
+    // console.log(admins)
 
     return (
+        <SafeAreaView>
         <ScrollView>
             {/* <FAB
                 style={styles.fab}
@@ -172,6 +173,7 @@ export const Admin = ({ navigation }) => {
                 />
             </DataTable>
         </ScrollView>
+        </SafeAreaView>
     )
 }
 

@@ -12,7 +12,7 @@ export const Login = () => {
         <Formik
             initialValues={{ username: '', password: '' }}
             onSubmit={values => {
-                console.log(values)
+                // console.log(values)
                 dispatch(login(values))
             }}
         >

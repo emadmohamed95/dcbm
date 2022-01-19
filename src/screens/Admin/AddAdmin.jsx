@@ -55,7 +55,7 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 export const AddAdmin = ({route,navigation }) => {
     const dispatch = useDispatch()
     const { user } = route?.params?route.params:{};
-    console.log(user)
+    // console.log(user)
 
     const phoneRegExp = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/
 
@@ -242,7 +242,7 @@ export const AddAdmin = ({route,navigation }) => {
                 });
             }
         });
-        console.log(transformedPermissions)
+        // console.log(transformedPermissions)
 
         return transformedPermissions;
     };

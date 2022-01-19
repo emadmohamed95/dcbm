@@ -1,47 +1,47 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
-import { deleteCountry, getCountries } from '../../actions/countryActions';
-import { SafeAreaView } from 'react-native';
+import { deleteMovieVersion } from '../../actions/movieActions';
 
 
 const optionsPerPage = [5, 10, 20];
 
 
-const UserRow = ({ country,navigation }) => {
+const UserRow = ({ movieVersion,navigation,movie }) => {
     const [hidden, sethidden] = useState(true)
     const dispatch = useDispatch()
 
     return (
         <><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
-            <DataTable.Cell>{country.name}</DataTable.Cell>
-            <DataTable.Cell >{country.code}</DataTable.Cell>
+            <DataTable.Cell>{movieVersion.name}</DataTable.Cell>
+            <DataTable.Cell>{movieVersion.country.name}</DataTable.Cell>
 
             <IconButton
                 icon="pencil"
                 color={'#005374'}
                 size={20}
-                onPress={() => navigation.navigate('AddCountry', {
-                    country:country
+                onPress={() => navigation.navigate('AddMovieVersion', {
+                    movieVersion:movieVersion,
+                    movie:movie
                   })}
             />
             <IconButton
                 icon="delete"
                 color={'#005374'}
                 size={20}
-                onPress={() => dispatch(deleteCountry(country))}
+                onPress={() => dispatch(deleteMovieVersion(movieVersion))}
             />
         </DataTable.Row>
         </>
     )
 }
 
-export const Country = ({navigation}) => {
+export const MovieVersion = ({navigation,movieVersions,movie}) => {
 
     const [page, setPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(optionsPerPage[0]);
@@ -49,69 +49,60 @@ export const Country = ({navigation}) => {
 
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        dispatch(getCountries());
-    }, [getCountries]);
-
-  
-
-    const countries = useSelector(state => state.country.countries)
-
 
     const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, countries.length);
+    const to = Math.min((page + 1) * itemsPerPage, movieVersions.length);
 
     useEffect(() => {
         setPage(0);
         const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, countries.length);
-    setPaginatedData(countries.slice(from, to))
+    const to = Math.min((page + 1) * itemsPerPage, movieVersions.length);
+    setPaginatedData(movieVersions.slice(from, to))
     }, [itemsPerPage]);
 
+
     useEffect(() => {
-        setPaginatedData(countries.slice(from, to))
-    }, [countries]);
+        setPaginatedData(movieVersions.slice(from, to))
+    }, [movieVersions]);
 
     
     useEffect(() => {
-        setPaginatedData(countries.slice(from, to))
+        setPaginatedData(movieVersions.slice(from, to))
     }, [page])
 
-    // console.log(countries)
 
     return (
-        <SafeAreaView>
-        <ScrollView>
+        <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
-                    <DataTable.Title >Code</DataTable.Title>
+                    <DataTable.Title >Country</DataTable.Title>
                     <IconButton
                         icon="plus-circle"
                         color={'#005374'}
                         size={24}
-                        onPress={() => navigation.navigate('AddCountry')}
-                    />
+                        onPress={() => navigation.navigate('AddMovieVersion', {
+                            movie:movie
+                          })}                    />
                 </DataTable.Header>
 
-                {paginatedData.map((country, i) => (
-                    <UserRow country={country} key={i} navigation={navigation}></UserRow>
+                {paginatedData.map((movieVersion, i) => (
+                    <UserRow movieVersion={movieVersion} key={i} navigation={navigation} movie={movie}></UserRow>
                 ))}
 
                 <DataTable.Pagination
                     page={page}
-                    numberOfPages={Math.ceil(countries.length / itemsPerPage)}
+                    numberOfPages={Math.ceil(movieVersions.length / itemsPerPage)}
                     onPageChange={page => setPage(page)}
-                    label={`${from + 1}-${to} of ${countries.length}`} optionsPerPage={optionsPerPage}
-                    ishowFastPaginationControls
+                    label={`${from + 1}-${to} of ${movieVersions.length}`} optionsPerPage={optionsPerPage}
+                    showFastPaginationControls
                     numberOfItemsPerPageList={optionsPerPage}
                     numberOfItemsPerPage={itemsPerPage}
                     onItemsPerPageChange={setItemsPerPage}
                 // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
-        </ScrollView>
-        </SafeAreaView>
+        </>
     )
 }
 

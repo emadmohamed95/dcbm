@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
@@ -16,6 +16,7 @@ const UserRow = ({ producer,navigation }) => {
     const dispatch = useDispatch()
 
     return (
+        <SafeAreaView>
         <ScrollView><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
             <DataTable.Cell>{producer.name}</DataTable.Cell>
             <DataTable.Cell >{producer.email}</DataTable.Cell>
@@ -36,6 +37,7 @@ const UserRow = ({ producer,navigation }) => {
             />
         </DataTable.Row>
         </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -76,7 +78,7 @@ export const Producer = ({navigation}) => {
         setPaginatedData(producers.slice(from, to))
     }, [page])
 
-    console.log(producers)
+    // console.log(producers)
 
     return (
         <>

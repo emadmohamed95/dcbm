@@ -91,7 +91,7 @@ export const Adddistributor = ({ route, navigation }) => {
     }, [])
 
     const countries = useSelector(state => state.country.countries)
-    console.log(countries)
+    // console.log(countries)
 
 
     useEffect(() => {
@@ -114,7 +114,7 @@ export const Adddistributor = ({ route, navigation }) => {
             },
         };
 
-        console.log(finalValues)
+        // console.log(finalValues)
 
         if (user) {
             const toBeRemovedValues = _differenceWith(

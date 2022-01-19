@@ -58,7 +58,7 @@ export const Addcinema = ({ route, navigation }) => {
 
     const { cinema } = route?.params ? route.params : {};
 
-    console.log(cinema)
+    // console.log(cinema)
 
 
     useEffect(() => {
@@ -69,7 +69,7 @@ export const Addcinema = ({ route, navigation }) => {
 
     const handleOnSubmit = (values, { setSubmitting }) => {
 
-        console.log(values)
+        // console.log(values)
 
         if (cinema) {
 
@@ -298,7 +298,7 @@ export const Addcinema = ({ route, navigation }) => {
 
 
 
-                            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop:20 }}>
                                 <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'> {cinema ? "Edit" : "Add"} cinema</Button>
                                 <Button onPress={navigation.goBack} mode='default' color='#005374'>Cancel</Button>
                             </View>

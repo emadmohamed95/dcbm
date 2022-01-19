@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View ,SafeAreaView} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
@@ -77,9 +77,10 @@ export const Distributor = ({navigation}) => {
         setPaginatedData(distributors.slice(from, to))
     }, [page])
 
-    console.log(distributors)
+    // console.log(distributors)
 
     return (
+        <SafeAreaView>
         <ScrollView>
             {/* <FAB
                 style={styles.fab}
@@ -123,6 +124,7 @@ export const Distributor = ({navigation}) => {
                 />
             </DataTable>
         </ScrollView>
+        </SafeAreaView>
     )
 }
 

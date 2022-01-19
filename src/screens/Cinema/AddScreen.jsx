@@ -43,11 +43,11 @@ export const AddScreen = ({ route, navigation }) => {
 
     const { cinema,screen } = route?.params ? route.params : {};
 
-    console.log(screen)
+    // console.log(screen)
 
     const handleOnSubmit = (values, { setSubmitting }) => {
 
-        console.log(values)
+        // console.log(values)
 
 
         if (screen) {
