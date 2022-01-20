@@ -205,7 +205,7 @@ export const requestMovie = (movie, user) => (dispatch, getState) => {
     );
 };
 
-export const assignMovie = (movie, values) => (dispatch, getState) => {
+export const assignMovie = (movie, values,navigation )=> (dispatch, getState) => {
   const id = movie.id;
   // console.log(movie);
   dispatch({
@@ -227,7 +227,11 @@ export const assignMovie = (movie, values) => (dispatch, getState) => {
     })
     .catch((err) =>
     console.log(err.response.data)
-    );
+    ).finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const deassignMovie = (movie, cinemaMovies) => (dispatch, getState) => {
@@ -360,7 +364,7 @@ export const getMovieVersions = (movie) => (dispatch, getState) => {
     );
 };
 
-export const addMovieVersion = (movieVersion) => (dispatch, getState) => {
+export const addMovieVersion = (movieVersion,navigation) => (dispatch, getState) => {
   // console.log(movie)
 
   const id = movieVersion.movieId;
@@ -395,10 +399,14 @@ export const addMovieVersion = (movieVersion) => (dispatch, getState) => {
     })
     .catch((err) =>
     console.log(err.response.data)
-    );
+    ).finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
-export const editMovieVersion = (movieVersion) => (dispatch, getState) => {
+export const editMovieVersion = (movieVersion,navigation) => (dispatch, getState) => {
   dispatch({
     type: IS_LOADING,
     payload: true,
@@ -437,7 +445,11 @@ export const editMovieVersion = (movieVersion) => (dispatch, getState) => {
     })
     .catch((err) =>
     console.log(err.response.data)
-    );
+    ).finally(()=>{
+      if(navigation){
+        navigation.goBack()
+      }
+    })
 };
 
 export const deleteMovieVersion = (movie, movieVersion) => (
@@ -529,6 +541,7 @@ export const getMovieUsers = (id,token) => {
 
 
 export const getMoviesAssignedToUser = (id,token) => {
+  console.log(id,token)
 
   return axios.get(URL+`/api/movies/users/${id}`, nonStatetokenConfig(token))
 
