@@ -77,11 +77,11 @@ export const Addmovie = ({ route, navigation }) => {
 
         if (movie&&movie!="") {
         //   startLoadingInDialog()
-        console.log('getting movie')
+        // console.log('getting movie')
           getMovieUsers(movie.id, token)
             .then((res) => {
 
-                console.log(res.data)
+                // console.log(res.data)
     
               const users = res.data.users;
              
@@ -97,7 +97,7 @@ export const Addmovie = ({ route, navigation }) => {
     
                 let newmovieCountry = res.data.country
 
-                console.log(newmovieDistributors.map(dist=>dist.id))
+                // console.log(newmovieDistributors.map(dist=>dist.id))
     
     
                 setMovieProducer(newmovieProducer)
@@ -252,7 +252,7 @@ export const Addmovie = ({ route, navigation }) => {
             delete finalValues.country;
           }
 
-          console.log(finalValues)
+          // console.log(finalValues)
     
           dispatch(addMovie(finalValues,navigation));
         }

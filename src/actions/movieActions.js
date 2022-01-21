@@ -234,7 +234,7 @@ export const assignMovie = (movie, values,navigation )=> (dispatch, getState) =>
     })
 };
 
-export const deassignMovie = (movie, cinemaMovies) => (dispatch, getState) => {
+export const deassignMovie = (movie, cinemaMovies, toggleRefresh) => (dispatch, getState) => {
   const id = movie.id;
   // console.log(movie);
   dispatch({
@@ -265,10 +265,14 @@ export const deassignMovie = (movie, cinemaMovies) => (dispatch, getState) => {
     })
     .catch((err) =>
     console.log(err.response.data)
-    );
+    ).finally(()=>{
+      if(toggleRefresh){
+        toggleRefresh()
+      }
+    })
 };
 
-export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema) => (
+export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema, toggleRefresh) => (
   dispatch,
   getState
 ) => {
@@ -300,7 +304,11 @@ export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema) => (
     })
     .catch((err) =>
     console.log(err.response.data)
-    );
+    ).finally(()=>{
+      if(toggleRefresh){
+        toggleRefresh()
+      }
+    })
 };
 
 export const sendKdms = (cinemaMovies, movie, user, sendKdmToCinema) => (
@@ -584,7 +592,7 @@ export const getMovieVersionsAssignedToUser = (id,uid,token) => {
 };
 
 
-export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate) => (
+export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate, navigation) => (
   dispatch,
   getState
 ) => {
@@ -615,5 +623,9 @@ export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate)
       // sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
-console.log(err.response.data)    );
+console.log(err.response.data)    ).finally(()=>{
+  if(navigation){
+    navigation.goBack()
+  }
+})
 };

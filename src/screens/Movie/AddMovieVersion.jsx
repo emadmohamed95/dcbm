@@ -124,7 +124,7 @@ export const Addmovieversion = ({ route, navigation }) => {
         const movieDistributors = movieVersion && movieVersion.users
         ? movieVersion.users.filter((user) => user.type.name == "Distributor")
         : [];
-        console.log(movieDistributors)
+        // console.log(movieDistributors)
         setselectedDistributors(movieDistributors.map(dist=>dist.id))
       }, [movieVersion]);
 
@@ -167,7 +167,7 @@ export const Addmovieversion = ({ route, navigation }) => {
             //   producers.find((prod) => prod.id == values.producer)
             // );
             // toBeRemovedValues.push(movieVersion.producer);
-          console.log(toBeAddedValues)
+          // console.log(toBeAddedValues)
     
           const finalValues = {
             ...values,

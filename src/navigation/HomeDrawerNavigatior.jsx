@@ -12,6 +12,9 @@ import { CountryStack } from './CountryStack';
 import { CinemaStack } from './CinemaStack';
 import { MovieStack } from './MovieStack';
 import { DistributionStack } from './DistributionStack';
+import { HistoryStack } from './HistoryStack';
+import { ProfileStack } from './ProfileStack';
+import { Notification } from '../screens/Notificatiion/Notification';
 const Drawer = createDrawerNavigator();
  
 export const HomeDrawerNavigator = () => {
@@ -26,9 +29,13 @@ export const HomeDrawerNavigator = () => {
             <Drawer.Screen name="Cinemas" component={CinemaStack} />
             <Drawer.Screen name="Movies" component={MovieStack} />
             <Drawer.Screen name="DistributorMovies" component={DistributionStack} />
+            <Drawer.Screen name="History" component={HistoryStack} />
 
 
-            <Drawer.Screen name="Profile" component={Profile} />
+
+            <Drawer.Screen name="Profile" component={ProfileStack} />
+            <Drawer.Screen name="Notifications" component={Notification} />
+
         </Drawer.Navigator>
     )
 }

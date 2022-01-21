@@ -122,7 +122,7 @@ export const markUserNotificationAsRead = (user, notification) => (
   });
   axios
     .put(
-      `/api/users/${id}/mark-notification-read`,
+      URL+`/api/users/${id}/mark-notification-read`,
       { notification },
       tokenConfig(getState)
     )

@@ -6,7 +6,7 @@ import { DataTable } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
-import { deleteMovie, getMovies, getMoviesAssignedToUser, getMovieVersionsAssignedToUser } from '../../actions/movieActions';
+import { deleteMovie, getMovies, getMoviesAssignedToUser, getMovieVersionsAssignedToUser, getPreviouslyDistributedMovies } from '../../actions/movieActions';
 import { MovieVersion } from './MovieVersion';
 import { useIsFocused } from "@react-navigation/native";
 import { MovieKDMs } from './MovieKDMs';
@@ -27,26 +27,26 @@ const UserRow = ({ movie,navigation }) => {
             <DataTable.Cell >{movie.localizedName}</DataTable.Cell>
 
             <IconButton
-                icon="theater"
+                icon="restore"
                 color={'#005374'}
                 size={20}
-                onPress={() => navigation.navigate('AssignMovie', {
+                onPress={() => navigation.navigate('RedistributeMovie', {
                     movie:movie
                   })}
             />
         </DataTable.Row>
 
-        {!hidden ?<>
+        {/* {!hidden ?<>
         <View style={{ display:'flex', justifyContent:'center', alignItems:'center'}}>
         <View style={{width:'75%'}}>
             <MovieKDMs navigation={navigation} movie={movie}></MovieKDMs>
         </View>
-            </View></>: <></>}
+            </View></>: <></>} */}
         </>
     )
 }
 
-export const DistributorMovie = ({navigation}) => {
+export const History = ({navigation}) => {
     const isFocused = useIsFocused();
 
     const [page, setPage] = useState(0);
@@ -64,7 +64,7 @@ export const DistributorMovie = ({navigation}) => {
 
     useEffect(()=>{
         if(sessionUser){
-            getMoviesAssignedToUser(sessionUser.id, token)
+            getPreviouslyDistributedMovies(sessionUser.id, token)
             .then((res) => {
               setDistMovies(res.data)
             })
@@ -101,12 +101,12 @@ export const DistributorMovie = ({navigation}) => {
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
                     <DataTable.Title >Code</DataTable.Title>
-                    <IconButton
+                    {/* <IconButton
                         icon="plus-circle"
                         color={'#005374'}
                         size={24}
                         onPress={() => navigation.navigate('AddMovie')}
-                    />
+                    /> */}
                 </DataTable.Header>
 
                 {paginatedData.map((movie, i) => (

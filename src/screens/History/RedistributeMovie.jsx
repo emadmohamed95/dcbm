@@ -17,16 +17,14 @@ import DocumentPicker, {
     types,
 } from 'react-native-document-picker'
 import { getUsers } from '../../actions/userActions';
-import { addMovie, assignMovie, editMovie, getMovieUsers, getMovieVersionsAssignedToUser } from '../../actions/movieActions';
+import { addMovie, assignMovie, editMovie, getMovieUsers, getMovieVersionsAssignedToUser, redistributeMovie } from '../../actions/movieActions';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { addDays, format, differenceInCalendarDays } from 'date-fns';
 
-export const AssignMovie = ({ route, navigation }) => {
+export const RedistributeMovie = ({ route, navigation }) => {
     const dispatch = useDispatch()
     const [selectedCountries, setSelectedCountries] = useState([])
-    const [selectedCinemas, setSelectedCinemas] = useState([])
     const [selectedVersions, setSelectedVersions] = useState([])
-    const [cinemaOptions, setCinemaOptions] = useState([])
     const [checked, setChecked] = useState(false);
 
 
@@ -63,9 +61,6 @@ export const AssignMovie = ({ route, navigation }) => {
         dispatch(getCountries())
     }, [])
 
-    useEffect(() => {
-        dispatch(getCinemas())
-    }, [])
 
 
     const { movie } = route?.params ? route.params : {};
@@ -74,28 +69,32 @@ export const AssignMovie = ({ route, navigation }) => {
 
 
     const countries = useSelector(state => state.country.countries)
-    const cinemas = useSelector(state => state.cinema.cinemas)
-    const users = useSelector(state => state.user.users)
     const sessionUser = useSelector(state => state.auth.user)
     const token = useSelector(state => state.auth.token)
 
     const [mvs, setMvs] = useState([]);
 
-
-    useEffect(() => {
-        if (movie && movie != "") {
-            //   startLoadingInDialog()
-            getMovieVersionsAssignedToUser(movie.id, sessionUser.id, token)
-                .then((res) => {
-                    // setMvs(res.data)
-                    // console.log(res.data)
-                    // console.log(res.data.map(mv=>({...mv,displayKey:mv.country.name})))
-                    setMvs(res.data.map(mv=>({...mv,displayKey:mv.country.name})))
-                    // finishLoadingInDialog()
-                })
-                .catch(err => { console.log(err) });
+    useEffect(()=>{
+        if (movie&&movie!="") {
+        //   startLoadingInDialog()
+        getMovieVersionsAssignedToUser(movie.id,sessionUser.id, token)
+          .then((res) => {
+  
+            let filteredMvs = res.data.filter(mv=>(mv.cinemas.some(cinema=>cinema.CinemaMovies.kdmCreated && (cinema.CinemaMovies.kdmSentToCinema||cinema.CinemaMovies.kdmSentToDistributor))))
+  
+            // console.log(res.data)
+  
+            // console.log('filteredMvs')
+            console.log(filteredMvs)
+            // console.log('++++++++')
+  
+            setMvs(filteredMvs.map(mv=>({...mv,displayKey:mv.country.name})))
+            // finishLoadingInDialog()
+          })
+          .catch(err=>{console.log(err)
+          });
         }
-    }, [movie])
+    },[movie])
 
 
     const schema = Yup.object().shape({
@@ -103,60 +102,53 @@ export const AssignMovie = ({ route, navigation }) => {
         // cinemas: Yup.array().required("Required").nullable()
     });
 
+    // const handleOnSubmit = (values, { setSubmitting }) => {
+    //     console.log(values);
+    //     dispatch(assignMovie(movie, values, navigation));
+    //     setSubmitting(false);
+    // };
+
     const handleOnSubmit = (values, { setSubmitting }) => {
-        console.log(values);
-        dispatch(assignMovie(movie, values, navigation));
+        // console.log(values);
+    let cinemaMovies = []
+  
+        values.movieVersions.forEach(mv => {
+          mv.cinemas.forEach(cinema => {
+            if(cinema.CinemaMovies.kdmCreated && (cinema.CinemaMovies.kdmSentToCinema||cinema.CinemaMovies.kdmSentToDistributor)){
+              cinemaMovies.push(cinema.CinemaMovies)
+            }
+          });
+          
+        });
+  
+        dispatch(redistributeMovie(movie,sessionUser, cinemaMovies,values.startDate, values.endDate,navigation))
         setSubmitting(false);
-    };
+      };
 
-    const handleSelectAll = (isChecked, setFieldValue) => {
+      const handleSelectAll = (isChecked, setFieldValue) => {
         if (isChecked) {
-            setFieldValue("cinemas", cinemaOptions);
-            setSelectedCinemas(cinemaOptions.map(cinema=>cinema.id))
-
+          setFieldValue("movieVersions", mvs);
+          setSelectedVersions(mvs.map(mv=>mv.id))
+    
         } else {
-
-            setFieldValue("cinemas", []);
-            setSelectedCinemas([])
-
-
-
+    
+          setFieldValue("movieVersions", []);
+          setSelectedVersions([])
+    
+    
         }
-
-    };
-
-
-    // const cinemaOptions = selectedCountries.length > 0 ? cinemas.filter(cinema => (selectedCountries.some(country => country == cinema.country.id))) : []
-    // cinemaOptions.sort((a, b) =>
-    //     (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
-    // );
-
-    // useEffect(() => {
-    //     setSelectedCinemas()
-    // }, [cinemas])
-
-    useEffect(() => {
-        // console.log(selectedCountries)
-        // console.log(cinemas)
+    
+      };
 
 
-        const cin = selectedCountries.length > 0 ? cinemas.filter(cinema => (selectedCountries.some(country => country.id == cinema.country.id))) : []
-        cin.sort((a, b) =>
-            (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
-        );
-        // console.log('inside useeffect')
-        // console.log(cin)
-        setCinemaOptions(cin)
-    }, [selectedCountries])
-
-    const initialValues = {
-        movieVersion: null,
-        countries: [],
-        cinemas: [],
+    
+   
+      const initialValues = {
+        movieVersions: [],
         startDate: new Date(),
         endDate: addDays(new Date(), 30),
         duration: `30 Days`
-    };
+      };
 
 
     return (
@@ -181,10 +173,10 @@ export const AssignMovie = ({ route, navigation }) => {
                                     modalWithSafeAreaView
                                     uniqueKey="id"
                                     subKey="children"
-                                    selectText={"choose Movie Version"}
-                                    selectedText={"Country"}
+                                    selectText={"choose Movie Versions"}
+                                    selectedText={"Movie versions"}
                                     searchPlaceholderText={'Search Versions'}
-                                    single
+                                    
                                     showCancelButton
                                     displayKey='displayKey'
                                      
@@ -192,20 +184,17 @@ export const AssignMovie = ({ route, navigation }) => {
                                     // readOnlyHeadings={true}
                                     onSelectedItemsChange={(items) => {
                                         setSelectedVersions(items)
-                                        setFieldValue(`cinemas`, []);
-                                        setSelectedCinemas([])
-
 
                                     }}
                                     onSelectedItemObjectsChange={items => {
                                         console.log(items)
-                                        setFieldValue(`movieVersion`, items[0]);
+                                        setFieldValue(`movieVersion`, items);
                                         // const count = [];
                                         // if (items) {
                                         //     count.push(items[0].country)
                                         // }
                                         // value.forEach(mv=>{count.push(mv.country)})
-                                        setSelectedCountries(items.map(item => item.country));
+                                        // setSelectedCountries(items.map(item => item.country));
 
                                     }
                                     }
@@ -218,37 +207,7 @@ export const AssignMovie = ({ route, navigation }) => {
                             </View>
 
 
-                            <View style={{ width: '100%' }}>
-                                <SectionedMultiSelect
-                                    items={cinemaOptions}
-                                    IconRenderer={Icon}
-                                    modalWithSafeAreaView
-                                    uniqueKey="id"
-                                    subKey="children"
-                                    selectText={"Cinemas"}
-                                    selectedText={"Cinemas"}
-                                    searchPlaceholderText={'Search Cinemas'}
-
-                                    showCancelButton
-                                    // showDropDowns={true}
-                                    // readOnlyHeadings={true}
-                                    onSelectedItemsChange={(items) => {
-                                        setSelectedCinemas(items)
-
-                                    }}
-                                    onSelectedItemObjectsChange={items => {
-                                        console.log(items)
-                                        setFieldValue(`cinemas`, items);
-                                    }
-                                    }
-                                    selectedItems={selectedCinemas}
-                                    showRemoveAll
-                                    colors={{ primary: '#005374' }}
-                                // styles={{ selectToggle:{width: '100%', backgroundColor:'red'} }}
-                                />
-
-                            </View>
-
+                           
                             {/* <Checkbox
                                 status={checked ? 'checked' : 'unchecked'}
                                 // label={'Select All Cinemas'}
@@ -262,7 +221,7 @@ export const AssignMovie = ({ route, navigation }) => {
                     
                             ></Checkbox> */}
 
-                            <Checkbox.Item label="Select All Cinemas" status={checked ? 'checked' : 'unchecked'} onPress={() => {
+                            <Checkbox.Item label="Select All Versions" status={checked ? 'checked' : 'unchecked'} onPress={() => {
                                     setChecked(!checked);
                                     handleSelectAll(!checked,setFieldValue)
                                 }}
@@ -322,7 +281,7 @@ export const AssignMovie = ({ route, navigation }) => {
 
 
                             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop: 20 }}>
-                                <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'>Assign Movie</Button>
+                                <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'>Send Kdms</Button>
                                 <Button onPress={navigation.goBack} mode='default' color='#005374'>Cancel</Button>
                             </View>
                         </View>
