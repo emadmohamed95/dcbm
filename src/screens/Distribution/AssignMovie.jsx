@@ -20,6 +20,7 @@ import { getUsers } from '../../actions/userActions';
 import { addMovie, assignMovie, editMovie, getMovieUsers, getMovieVersionsAssignedToUser } from '../../actions/movieActions';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { addDays, format, differenceInCalendarDays } from 'date-fns';
+import { handleError } from '../../helper/errorHandler';
 
 export const AssignMovie = ({ route, navigation }) => {
     const dispatch = useDispatch()
@@ -93,7 +94,7 @@ export const AssignMovie = ({ route, navigation }) => {
                     setMvs(res.data.map(mv=>({...mv,displayKey:mv.country.name})))
                     // finishLoadingInDialog()
                 })
-                .catch(err => { console.log(err) });
+                .catch(err => { handleError(err) });
         }
     }, [movie])
 
@@ -104,7 +105,7 @@ export const AssignMovie = ({ route, navigation }) => {
     });
 
     const handleOnSubmit = (values, { setSubmitting }) => {
-        console.log(values);
+        // console.log(values);
         dispatch(assignMovie(movie, values, navigation));
         setSubmitting(false);
     };
@@ -198,7 +199,7 @@ export const AssignMovie = ({ route, navigation }) => {
 
                                     }}
                                     onSelectedItemObjectsChange={items => {
-                                        console.log(items)
+                                        // console.log(items)
                                         setFieldValue(`movieVersion`, items[0]);
                                         // const count = [];
                                         // if (items) {
@@ -237,7 +238,7 @@ export const AssignMovie = ({ route, navigation }) => {
 
                                     }}
                                     onSelectedItemObjectsChange={items => {
-                                        console.log(items)
+                                        // console.log(items)
                                         setFieldValue(`cinemas`, items);
                                     }
                                     }

@@ -104,6 +104,8 @@ export const Notification = ({ route, navigation }) => {
 
                 <View style={styles.div}>
 
+                {notifications.length==0?<Title>{"No Notifications"}</Title>:<></>}
+
                     {notifications.map((notification, i) => (
                         <View key={i}         
                         style={{ backgroundColor: notification.isRead ? null: "#bbdefb", marginBottom:20, display:'flex', flexDirection:'row', flexWrap:'wrap', alignItems:'center' }}                        >

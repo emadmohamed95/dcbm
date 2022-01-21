@@ -111,7 +111,7 @@ export const Addmovie = ({ route, navigation }) => {
                 // finishLoadingInDialog()
     
             })
-            .catch(err=>{console.log(err)});
+            .catch(err=>{handleError(err)});
     
     
         }

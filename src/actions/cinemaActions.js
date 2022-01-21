@@ -10,6 +10,7 @@ import {
 import { tokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
+import { handleError } from "../helper/errorHandler";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -35,7 +36,8 @@ export const getCinemas = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-console.log(err)
+    handleError(err)
+
 );
 };
 
@@ -77,7 +79,8 @@ export const addCinema = (cinema,navigation) => (dispatch, getState) => {
       // sendNotification("Cinema Added Successfully", "success");
     })
     .catch((err) =>
-    console.log(err)
+    handleError(err)
+
     )   .finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -126,7 +129,8 @@ export const editCinema = (cinema,navigation) => (dispatch, getState) => {
       // sendNotification("Cinema Edited Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
+
     ).finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -155,6 +159,7 @@ export const deleteCinema = (cinema) => (dispatch, getState) => {
       // sendNotification("Cinema Deleted Successfully", "success");
     })
     .catch((err) =>
-    console.log(err)
+    handleError(err)
+
     );
 };

@@ -11,6 +11,7 @@ import {
 import { tokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
+import { handleError } from "../helper/errorHandler";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -37,7 +38,8 @@ export const getCountries = () => (dispatch, getState) => {
     })
     .catch((err) =>
       // dispatch(returnErrors(err.response.data, err.response.status))
-      console.log(err)
+      handleError(err)
+
     );
 };
 
@@ -63,7 +65,8 @@ export const addCountry = (country,navigation) => (dispatch, getState) => {
       // sendNotification("Country Added Successfully", "success");
     })
     .catch((err) =>{
-    console.log(err)
+      handleError(err)
+
     }
     )
     .finally(()=>{
@@ -95,7 +98,7 @@ export const editCountry = (country,navigation) => (dispatch, getState) => {
       // sendNotification("Country Edited Successfully", "success");
     })
     .catch((err) =>{
-    console.log(err)
+      handleError(err)
     })
     .finally(()=>{
       if(navigation){
@@ -125,6 +128,6 @@ export const deleteCountry = (country) => (dispatch, getState) => {
       // sendNotification("Country Deleted Successfully", "success");
     })
     .catch((err) =>
-    console.log(err)
+    handleError(err)
     );
 };

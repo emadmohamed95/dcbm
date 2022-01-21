@@ -12,6 +12,7 @@ import { tokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { getCinemas } from "./cinemaActions";
 import { URL } from "../constants/constants";
+import { handleError } from "../helper/errorHandler";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -36,7 +37,7 @@ export const getScreens = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-    console.log(err)
+    handleError(err)
     );
 };
 
@@ -86,7 +87,7 @@ export const addScreen = (screen,navigation) => (dispatch, getState) => {
       // sendNotification("Screen Added Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ) .finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -121,7 +122,7 @@ export const editScreen = (screen,navigation) => (dispatch, getState) => {
       // sendNotification("Screen Edited Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ) .finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -151,6 +152,6 @@ export const deleteScreen = (screen) => (dispatch, getState) => {
       // sendNotification("Screen Deleted Successfully", "success");
     })
     .catch((err) =>
-    console.log(err)
+    handleError(err)
     );
 };

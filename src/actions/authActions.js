@@ -13,6 +13,8 @@ import {
 
 import { URL } from "../constants/constants";
 
+import { handleError } from '../helper/errorHandler';
+
 
 
 // Check token & load user
@@ -20,7 +22,7 @@ export const loadUser = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
-  console.log('loaduser'+ tokenConfig(getState))
+  // console.log('loaduser'+ tokenConfig(getState))
 
   axios
     .get(URL+'/api/auth/user', tokenConfig(getState))
@@ -34,7 +36,7 @@ export const loadUser = () => (dispatch, getState) => {
       
     )
     .catch(err => {
-      console.log(err)
+      handleError(err)
 
       dispatch({
         type: AUTH_ERROR
@@ -65,7 +67,7 @@ console.log(URL+'/api/auth/login')
       })}
     )
     .catch(err => {
-      console.log(err)
+      handleError(err)
       dispatch({
         type: LOGIN_FAIL
       });
@@ -78,6 +80,15 @@ export const logout = () => {
     type: LOGOUT_SUCCESS
   };
 };
+
+export const logoutError = () => dispatch => {
+  dispatch({
+    type: LOGOUT_SUCCESS
+  });
+
+}
+
+
 
 // Setup config/headers and token
 export const tokenConfig = getState => {

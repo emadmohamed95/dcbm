@@ -20,6 +20,7 @@ import {
 import { tokenConfig,nonStatetokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
+import { handleError } from "../helper/errorHandler";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -46,7 +47,7 @@ export const getMovies = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -91,7 +92,7 @@ export const addMovie = (movie,navigation) => (dispatch, getState) => {
       // sendNotification("Movie Added Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -144,7 +145,7 @@ export const editMovie = (movie,navigation) => (dispatch, getState) => {
       // sendNotification("Movie Edited Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -174,7 +175,7 @@ export const deleteMovie = (movie) => (dispatch, getState) => {
       // sendNotification("Movie Deleted Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -201,7 +202,7 @@ export const requestMovie = (movie, user) => (dispatch, getState) => {
       // sendNotification('Movie Edited Successfully','success');
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -226,7 +227,7 @@ export const assignMovie = (movie, values,navigation )=> (dispatch, getState) =>
       // sendNotification("Movie Assigned to Cinemas Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -264,7 +265,7 @@ export const deassignMovie = (movie, cinemaMovies, toggleRefresh) => (dispatch, 
       // );
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(toggleRefresh){
         toggleRefresh()
@@ -303,7 +304,7 @@ export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema, togg
       // sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(toggleRefresh){
         toggleRefresh()
@@ -342,7 +343,7 @@ export const sendKdms = (cinemaMovies, movie, user, sendKdmToCinema) => (
       // sendNotification("Movie KDMs are being Sent", "info");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -368,7 +369,7 @@ export const getMovieVersions = (movie) => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -406,7 +407,7 @@ export const addMovieVersion = (movieVersion,navigation) => (dispatch, getState)
       // sendNotification("Movie Version Added Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -452,7 +453,7 @@ export const editMovieVersion = (movieVersion,navigation) => (dispatch, getState
       // sendNotification("Movie Version Edited Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     ).finally(()=>{
       if(navigation){
         navigation.goBack()
@@ -491,7 +492,7 @@ export const deleteMovieVersion = (movie, movieVersion) => (
       // sendNotification("Movie Version Deleted Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -525,7 +526,7 @@ export const distributeMovieVersion = (movieVersion, cinema, user) => (
       // sendNotification("Movie Versions KDMs Generated Successfully", "success");
     })
     .catch((err) =>
-    console.log(err.response.data)
+    handleError(err)
     );
 };
 
@@ -623,7 +624,8 @@ export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate,
       // sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
-console.log(err.response.data)    ).finally(()=>{
+    handleError(err)
+    ).finally(()=>{
   if(navigation){
     navigation.goBack()
   }

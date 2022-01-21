@@ -14,6 +14,7 @@ import { logout, loadUser } from "./authActions";
 
 // import { IItem } from '../../types/interfaces';
 import { URL } from "../constants/constants";
+import { handleError } from "../helper/errorHandler";
 
 export const getUsers = () => (dispatch, getState) => {
   // console.log("inside actions")
@@ -37,7 +38,7 @@ export const getUsers = () => (dispatch, getState) => {
       // sendNotification('Users fetched Successfully','success');
     })
     .catch((err) =>{
-      console.log(err)
+      handleError(err)
     }
     );
 };
@@ -65,7 +66,7 @@ export const addUser = (user, navigation) => (dispatch, getState) => {
     })
     .catch((err) =>
     {
-      console.log(err.response.data)
+      handleError(err)
     }    )
     .finally(()=>{
       if(navigation){
@@ -102,7 +103,7 @@ export const editUser = (user, reloadUser,navigation) => (dispatch, getState) =>
     })
     .catch((err) =>
     {
-      console.log(err)
+      handleError(err)
     }    )
     .finally(()=>{
       if(navigation){
@@ -140,7 +141,7 @@ export const markUserNotificationAsRead = (user, notification) => (
     })
     .catch((err) =>
     {
-      console.log(err)
+      handleError(err)
     }    );
 };
 
@@ -166,7 +167,7 @@ export const deleteUser = (user) => (dispatch, getState) => {
     })
     .catch((err) =>
     {
-      console.log(err)
+      handleError(err)
     }    );
 };
 
@@ -191,6 +192,6 @@ export const changePassword = (creds) => (dispatch, getState) => {
     })
     .catch((err) =>
     {
-      console.log(err)
+      handleError(err)
     }    );
 };

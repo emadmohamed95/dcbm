@@ -69,7 +69,7 @@ export const Profile = ({ route, navigation }) => {
   };
 
 
-  const initialValues = user
+  const initialValues = user?user:{}
 
   return (
     <ScrollView>

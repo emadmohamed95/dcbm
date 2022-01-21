@@ -1,9 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { login } from '../../actions/authActions';
-import { TextInput , Button} from 'react-native-paper';
+import { TextInput, Button } from 'react-native-paper';
 
 export const Login = () => {
     const dispatch = useDispatch()
@@ -20,6 +20,15 @@ export const Login = () => {
                 <View style={styles.container}>
 
                     <View style={styles.div}>
+
+                        <Image
+                            source={require('../../assets/logo.png')}
+                            // source={{
+                            //     uri: 'https://reactnative.dev/img/tiny_logo.png',
+                            //   }}
+                        //   style={{ width: 50, height: 50, backgroundColor:'red' }}
+                        />
+
                         <TextInput
                             onChangeText={handleChange('username')}
                             onBlur={handleBlur('username')}

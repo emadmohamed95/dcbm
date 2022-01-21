@@ -10,6 +10,7 @@ import { deleteMovie, getMovies, getMoviesAssignedToUser, getMovieVersionsAssign
 import { MovieVersion } from './MovieVersion';
 import { useIsFocused } from "@react-navigation/native";
 import { MovieKDMs } from './MovieKDMs';
+import { handleError } from '../../helper/errorHandler';
 
 
 
@@ -68,7 +69,7 @@ export const DistributorMovie = ({navigation}) => {
             .then((res) => {
               setDistMovies(res.data)
             })
-            .catch(err=>console.log(err.response.data));
+            .catch(err=>handleError(err));
         }
         
     },[isFocused])
