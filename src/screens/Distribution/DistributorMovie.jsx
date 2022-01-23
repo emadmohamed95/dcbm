@@ -101,13 +101,13 @@ export const DistributorMovie = ({navigation}) => {
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
-                    <DataTable.Title >Code</DataTable.Title>
-                    <IconButton
+                    <DataTable.Title >Localized Name</DataTable.Title>
+                    {/* <IconButton
                         icon="plus-circle"
                         color={'#005374'}
                         size={24}
                         onPress={() => navigation.navigate('AddMovie')}
-                    />
+                    /> */}
                 </DataTable.Header>
 
                 {paginatedData.map((movie, i) => (

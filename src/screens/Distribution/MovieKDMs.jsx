@@ -40,13 +40,13 @@ const UserRow = ({ mvCinema, navigation, movie, sessionUser,refreshData,setRefre
             <DataTable.Cell>{mvCinema.country.name}</DataTable.Cell>
 
             <IconButton
-                icon="email"
+                icon="account-key"
                 color={'#005374'}
                 size={20}
                 onPress={() => onClickDistributeMovie(false)}
             />
             <IconButton
-                icon="email-outline"
+                icon="projector"
                 color={'#005374'}
                 size={20}
                 onPress={() => onClickDistributeMovie(true)}
