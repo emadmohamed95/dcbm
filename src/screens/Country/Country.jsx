@@ -8,6 +8,7 @@ import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
 import { deleteCountry, getCountries } from '../../actions/countryActions';
 import { SafeAreaView } from 'react-native';
+import { Loading } from '../Loading/Loading';
 
 
 const optionsPerPage = [5, 10, 20];
@@ -78,10 +79,13 @@ export const Country = ({navigation}) => {
     }, [page])
 
     // console.log(countries)
+    const isLoading = useSelector(state => state.loading.isLoading)
 
     return (
         <SafeAreaView>
         <ScrollView>
+        {isLoading?<Loading/>:
+            <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
@@ -110,6 +114,7 @@ export const Country = ({navigation}) => {
                 // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
+            </>}
         </ScrollView>
         </SafeAreaView>
     )

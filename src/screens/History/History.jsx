@@ -10,6 +10,9 @@ import { deleteMovie, getMovies, getMoviesAssignedToUser, getMovieVersionsAssign
 import { MovieVersion } from './MovieVersion';
 import { useIsFocused } from "@react-navigation/native";
 import { MovieKDMs } from './MovieKDMs';
+import { Loading } from '../Loading/Loading';
+import {startLoading,finishLoading} from '../../actions/loadingActions'
+
 
 
 
@@ -64,11 +67,14 @@ export const History = ({navigation}) => {
 
     useEffect(()=>{
         if(sessionUser){
+            dispatch(startLoading())
             getPreviouslyDistributedMovies(sessionUser.id, token)
             .then((res) => {
               setDistMovies(res.data)
             })
-            .catch(err=>console.log(err.response.data));
+            .catch(err=>console.log(err.response.data)).finally(()=>{
+                dispatch(finishLoading())
+            })
         }
         
     },[isFocused])
@@ -93,10 +99,15 @@ export const History = ({navigation}) => {
         setPaginatedData(distMovies.slice(from, to))
     }, [page])
 
+    const isLoading = useSelector(state => state.loading.isLoading)
+
+
 
     return (
         <SafeAreaView>
         <ScrollView>
+        {isLoading?<Loading/>:
+            <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
@@ -125,7 +136,7 @@ export const History = ({navigation}) => {
                     // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
-            
+            </>}
             </ScrollView>
             </SafeAreaView>
     )

@@ -6,6 +6,7 @@ import { DataTable } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
+import { Loading } from '../Loading/Loading';
 
 
 const optionsPerPage = [5, 10, 20];
@@ -128,15 +129,14 @@ export const Admin = ({ navigation }) => {
 
     // console.log(admins)
 
+    const isLoading = useSelector(state => state.loading.isLoading)
+
+
     return (
         <SafeAreaView>
         <ScrollView>
-            {/* <FAB
-                style={styles.fab}
 
-                icon="plus"
-                onPress={() => console.log('Pressed')}
-            /> */}
+            {isLoading?<Loading/>:
 
             <DataTable>
                 <DataTable.Header>
@@ -172,6 +172,7 @@ export const Admin = ({ navigation }) => {
                 // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
+}
         </ScrollView>
         </SafeAreaView>
     )

@@ -8,6 +8,7 @@ import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
 import { deleteMovie, getMovies } from '../../actions/movieActions';
 import { MovieVersion } from './MovieVersion';
+import { Loading } from '../Loading/Loading';
 
 
 const optionsPerPage = [5, 10, 20];
@@ -83,10 +84,14 @@ export const Movie = ({navigation}) => {
         setPaginatedData(movies.slice(from, to))
     }, [page])
 
+    const isLoading = useSelector(state => state.loading.isLoading)
+
 
     return (
         <SafeAreaView>
         <ScrollView>
+        {isLoading?<Loading/>:
+            <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
@@ -115,7 +120,7 @@ export const Movie = ({navigation}) => {
                     // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
-            
+            </>}
             </ScrollView>
             </SafeAreaView>
     )

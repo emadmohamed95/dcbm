@@ -7,6 +7,8 @@ import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'reac
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
 import { deassignMovie, deleteMovieVersion, distributeMovie, getMovieVersionsAssignedToUser } from '../../actions/movieActions';
+import { Loading } from '../Loading/Loading';
+import {startLoading,finishLoading} from '../../actions/loadingActions'
 
 const optionsPerPage = [5, 10, 20];
 
@@ -82,7 +84,7 @@ export const MovieKDMs = ({ navigation, movie }) => {
     useEffect(() => {
         console.log(refreshData)
         if(sessionUser){
-
+            // dispatch(startLoading())
         // startLoading()
         getMovieVersionsAssignedToUser(movie.id, sessionUser.id, token)
             .then((res) => {
@@ -103,7 +105,10 @@ export const MovieKDMs = ({ navigation, movie }) => {
             })
             .catch(err => {
                 console.log(err)
-            });
+            })
+            // .finally(()=>{
+            //     dispatch(finishLoading())
+            // })
         }
     }, [refreshData])
 
@@ -132,8 +137,11 @@ export const MovieKDMs = ({ navigation, movie }) => {
     }, [page])
 
 
-    return (
-        <>
+    const isLoading = useSelector(state => state.loading.isLoading)
+
+    return (<>
+        {isLoading?<Loading/>:
+            <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Cinema</DataTable.Title>
@@ -163,7 +171,8 @@ export const MovieKDMs = ({ navigation, movie }) => {
                 // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
-        </>
+            </>}
+    </>
     )
 }
 

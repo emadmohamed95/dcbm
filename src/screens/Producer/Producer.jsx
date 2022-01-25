@@ -6,6 +6,7 @@ import { DataTable } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
+import { Loading } from '../Loading/Loading';
 
 
 const optionsPerPage = [5, 10, 20];
@@ -16,8 +17,7 @@ const UserRow = ({ producer,navigation }) => {
     const dispatch = useDispatch()
 
     return (
-        <SafeAreaView>
-        <ScrollView><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
+        <><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
             <DataTable.Cell>{producer.name}</DataTable.Cell>
             <DataTable.Cell >{producer.email}</DataTable.Cell>
 
@@ -36,8 +36,7 @@ const UserRow = ({ producer,navigation }) => {
                 onPress={() => dispatch(deleteUser(producer))}
             />
         </DataTable.Row>
-        </ScrollView>
-        </SafeAreaView>
+        </>
     )
 }
 
@@ -80,15 +79,14 @@ export const Producer = ({navigation}) => {
 
     // console.log(producers)
 
+    const isLoading = useSelector(state => state.loading.isLoading)
+
+
     return (
-        <>
-            {/* <FAB
-                style={styles.fab}
-
-                icon="plus"
-                onPress={() => console.log('Pressed')}
-            /> */}
-
+        <SafeAreaView>
+        <ScrollView>
+        {isLoading?<Loading/>:
+            <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
@@ -99,12 +97,7 @@ export const Producer = ({navigation}) => {
                         size={24}
                         onPress={() => navigation.navigate('AddProducer')}
                     />
-                    {/* <FAB
-                        style={styles.fab}
-
-                        icon="plus"
-                        onPress={() => console.log('Pressed')}
-                    /> */}
+                    
                 </DataTable.Header>
 
                 {paginatedData.map((producer, i) => (
@@ -123,7 +116,9 @@ export const Producer = ({navigation}) => {
                     // selectPageDropdownLabel={'R'}
                 />
             </DataTable>
-        </>
+            </>}
+            </ScrollView>
+            </SafeAreaView>
     )
 }
 

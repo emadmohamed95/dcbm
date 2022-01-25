@@ -6,6 +6,7 @@ import { DataTable, Searchbar } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
+import { Loading } from '../Loading/Loading';
 
 
 const optionsPerPage = [5, 10, 20];
@@ -125,9 +126,15 @@ export const Distributor = ({ navigation }) => {
     // }, [filteredData])
 
 
+    const isLoading = useSelector(state => state.loading.isLoading)
+
     return (
+        
         <SafeAreaView>
+            
             <ScrollView>
+            {isLoading?<Loading/>:
+            <>
                 <Searchbar
                     placeholder="Search"
                     onChangeText={onChangeSearch}
@@ -168,7 +175,9 @@ export const Distributor = ({ navigation }) => {
                     // selectPageDropdownLabel={'R'}
                     />
                 </DataTable>
+                </>}
             </ScrollView>
+
         </SafeAreaView>
     )
 }
