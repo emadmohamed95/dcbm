@@ -13,8 +13,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { useSelector } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { loadUser } from './src/actions/authActions.js';
-import { DefaultTheme,Provider as PaperProvider } from 'react-native-paper';
+import { DefaultTheme,Provider as PaperProvider, Snackbar } from 'react-native-paper';
 import { AuthStackNavigatior } from './src/navigation/AuthStackNavigatior.jsx';
+import { CustomSnackbar } from './src/Components/CustomSnackbar.jsx';
 
 const theme = {
   ...DefaultTheme,
@@ -52,9 +53,12 @@ const dispatch = useDispatch()
 
 
   return (
+    <>
         <NavigationContainer>
           <AuthStackNavigatior/>
         </NavigationContainer>
+        <CustomSnackbar/>
+        </>
 
   );
 };

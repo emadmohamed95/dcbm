@@ -13,6 +13,7 @@ import { tokenConfig } from "./authActions";
 import { getCinemas } from "./cinemaActions";
 import { URL } from "../constants/constants";
 import { handleError } from "../helper/errorHandler";
+import { sendNotification } from "./notificationActions";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -84,7 +85,7 @@ export const addScreen = (screen,navigation) => (dispatch, getState) => {
       });
       dispatch(getCinemas());
 
-      // sendNotification("Screen Added Successfully", "success");
+      sendNotification("Screen Added Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -119,7 +120,7 @@ export const editScreen = (screen,navigation) => (dispatch, getState) => {
         payload: true,
       });
       dispatch(getCinemas());
-      // sendNotification("Screen Edited Successfully", "success");
+      sendNotification("Screen Edited Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -149,7 +150,7 @@ export const deleteScreen = (screen) => (dispatch, getState) => {
         payload: true,
       });
       dispatch(getCinemas());
-      // sendNotification("Screen Deleted Successfully", "success");
+      sendNotification("Screen Deleted Successfully", "success");
     })
     .catch((err) =>
     handleError(err)

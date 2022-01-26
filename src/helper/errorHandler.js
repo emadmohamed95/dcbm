@@ -1,4 +1,5 @@
 import { logout, logoutError } from '../actions/authActions'
+import { sendNotification } from '../actions/notificationActions'
 import {store} from '../store/index'
 export const handleError = (err)=>{
 
@@ -10,8 +11,11 @@ export const handleError = (err)=>{
             store.dispatch(logout())
         }
 
+        sendNotification(err.response.data.msg,"error")
+
     }else{
         console.log(err)
+        sendNotification(err,"error")
     }
 
     

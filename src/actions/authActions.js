@@ -8,12 +8,15 @@ import {
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  REGISTER_FAIL,
+  IS_LOADING,
+  FINISHED_LOADING
 } from './types';
 
 import { URL } from "../constants/constants";
 
 import { handleError } from '../helper/errorHandler';
+import { sendNotification } from './notificationActions';
 
 
 
@@ -36,7 +39,7 @@ export const loadUser = () => (dispatch, getState) => {
       
     )
     .catch(err => {
-      handleError(err)
+      // handleError(err)
 
       dispatch({
         type: AUTH_ERROR
@@ -58,18 +61,35 @@ export const login = (creds) => dispatch => {
 
 console.log(URL+'/api/auth/login')
 
+dispatch({
+  type: IS_LOADING,
+  payload: true,
+});
+
   axios
     .post(URL+'/api/auth/login', creds, config)
     .then(res =>{
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data
-      })}
+      })
+
+      dispatch({
+        type: FINISHED_LOADING,
+        payload: true,
+      });
+    }
     )
     .catch(err => {
       handleError(err)
+      // sendNotification("Login Failed", "error")
       dispatch({
         type: LOGIN_FAIL
+      });
+
+      dispatch({
+        type: FINISHED_LOADING,
+        payload: true,
       });
     });
 };

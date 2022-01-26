@@ -15,6 +15,7 @@ import { logout, loadUser } from "./authActions";
 // import { IItem } from '../../types/interfaces';
 import { URL } from "../constants/constants";
 import { handleError } from "../helper/errorHandler";
+import { sendNotification } from "./notificationActions";
 
 export const getUsers = () => (dispatch, getState) => {
   // console.log("inside actions")
@@ -62,7 +63,7 @@ export const addUser = (user, navigation) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("User Added Successfully", "success");
+      sendNotification("User Added Successfully", "success");
     })
     .catch((err) =>
     {
@@ -94,7 +95,7 @@ export const editUser = (user, reloadUser,navigation) => (dispatch, getState) =>
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("User Edited Successfully", "success");
+      sendNotification("User Edited Successfully", "success");
 
       if (reloadUser) {
         // console.log("user reloaded");
@@ -139,7 +140,7 @@ export const markUserNotificationAsRead = (user, notification) => (
       });
 
       dispatch(loadUser())
-      // sendNotification('User Edited Successfully','success');
+      sendNotification('User Edited Successfully','success');
     })
     .catch((err) =>
     {
@@ -165,7 +166,7 @@ export const deleteUser = (user) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("User Deleted Successfully", "success");
+      sendNotification("User Deleted Successfully", "success");
     })
     .catch((err) =>
     {
@@ -187,10 +188,10 @@ export const changePassword = (creds) => (dispatch, getState) => {
       });
       // console.log(res)
       dispatch(logout());
-      // sendNotification(
-      //   "Password changed successfully, please log in again",
-      //   "success"
-      // );
+      sendNotification(
+        "Password changed successfully, please log in again",
+        "success"
+      );
     })
     .catch((err) =>
     {

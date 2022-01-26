@@ -21,6 +21,7 @@ import { tokenConfig,nonStatetokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
 import { handleError } from "../helper/errorHandler";
+import { sendNotification } from "./notificationActions";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -89,7 +90,7 @@ export const addMovie = (movie,navigation) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Added Successfully", "success");
+      sendNotification("Movie Added Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -142,7 +143,7 @@ export const editMovie = (movie,navigation) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Edited Successfully", "success");
+      sendNotification("Movie Edited Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -172,7 +173,7 @@ export const deleteMovie = (movie) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Deleted Successfully", "success");
+      sendNotification("Movie Deleted Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -199,7 +200,7 @@ export const requestMovie = (movie, user) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification('Movie Edited Successfully','success');
+      sendNotification('Movie Edited Successfully','success');
     })
     .catch((err) =>
     handleError(err)
@@ -224,7 +225,7 @@ export const assignMovie = (movie, values,navigation )=> (dispatch, getState) =>
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Assigned to Cinemas Successfully", "success");
+      sendNotification("Movie Assigned to Cinemas Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -259,10 +260,10 @@ export const deassignMovie = (movie, cinemaMovies, toggleRefresh) => (dispatch, 
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification(
-      //   "Movie Versions Deassigned to Cinemas Successfully",
-      //   "success"
-      // );
+      sendNotification(
+        "Movie Versions Deassigned to Cinemas Successfully",
+        "success"
+      );
     })
     .catch((err) =>
     handleError(err)
@@ -301,7 +302,7 @@ export const distributeMovie = (movie, user, cinemaMovies, sendKdmToCinema, togg
         payload: true,
       });
       // sendNotification('Movie KDMs Distributed Successfully','success');
-      // sendNotification('Movie KDMs are being Sent','info');
+      sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
     handleError(err)
@@ -340,7 +341,7 @@ export const sendKdms = (cinemaMovies, movie, user, sendKdmToCinema) => (
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie KDMs are being Sent", "info");
+      sendNotification("Movie KDMs are being Sent", "info");
     })
     .catch((err) =>
     handleError(err)
@@ -404,7 +405,7 @@ export const addMovieVersion = (movieVersion,navigation) => (dispatch, getState)
         payload: true,
       });
 
-      // sendNotification("Movie Version Added Successfully", "success");
+      sendNotification("Movie Version Added Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -450,7 +451,7 @@ export const editMovieVersion = (movieVersion,navigation) => (dispatch, getState
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Version Edited Successfully", "success");
+      sendNotification("Movie Version Edited Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -489,7 +490,7 @@ export const deleteMovieVersion = (movie, movieVersion) => (
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Version Deleted Successfully", "success");
+      sendNotification("Movie Version Deleted Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -523,7 +524,7 @@ export const distributeMovieVersion = (movieVersion, cinema, user) => (
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Movie Versions KDMs Generated Successfully", "success");
+      sendNotification("Movie Versions KDMs Generated Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -621,7 +622,7 @@ export const redistributeMovie = (movie, user, cinemaMovies, startDate, endDate,
         payload: true,
       });
       // sendNotification('Movie KDMs Distributed Successfully','success');
-      // sendNotification('Movie KDMs are being Sent','info');
+      sendNotification('Movie KDMs are being Sent','info');
     })
     .catch((err) =>
     handleError(err)

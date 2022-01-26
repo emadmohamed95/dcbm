@@ -12,6 +12,7 @@ import { tokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
 import { handleError } from "../helper/errorHandler";
+import { sendNotification } from "./notificationActions";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -62,7 +63,7 @@ export const addCountry = (country,navigation) => (dispatch, getState) => {
         payload: true,
       });
 
-      // sendNotification("Country Added Successfully", "success");
+      sendNotification("Country Added Successfully", "success");
     })
     .catch((err) =>{
       handleError(err)
@@ -95,7 +96,7 @@ export const editCountry = (country,navigation) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Country Edited Successfully", "success");
+      sendNotification("Country Edited Successfully", "success");
     })
     .catch((err) =>{
       handleError(err)
@@ -125,7 +126,7 @@ export const deleteCountry = (country) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Country Deleted Successfully", "success");
+      sendNotification("Country Deleted Successfully", "success");
     })
     .catch((err) =>
     handleError(err)

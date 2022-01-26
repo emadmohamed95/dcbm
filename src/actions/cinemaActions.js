@@ -11,6 +11,7 @@ import { tokenConfig } from "./authActions";
 // import { sendNotification } from "../helper/notifier";
 import { URL } from "../constants/constants";
 import { handleError } from "../helper/errorHandler";
+import { sendNotification } from "./notificationActions";
 
 // import { IItem } from '../../types/interfaces';
 
@@ -76,7 +77,7 @@ export const addCinema = (cinema,navigation) => (dispatch, getState) => {
         payload: true,
       });
 
-      // sendNotification("Cinema Added Successfully", "success");
+       sendNotification("Cinema Added Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -126,7 +127,7 @@ export const editCinema = (cinema,navigation) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Cinema Edited Successfully", "success");
+      sendNotification("Cinema Edited Successfully", "success");
     })
     .catch((err) =>
     handleError(err)
@@ -156,7 +157,7 @@ export const deleteCinema = (cinema) => (dispatch, getState) => {
         type: FINISHED_LOADING,
         payload: true,
       });
-      // sendNotification("Cinema Deleted Successfully", "success");
+      sendNotification("Cinema Deleted Successfully", "success");
     })
     .catch((err) =>
     handleError(err)

@@ -1,12 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Formik } from 'formik';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../actions/authActions';
 import { TextInput, Button } from 'react-native-paper';
 
 export const Login = () => {
     const dispatch = useDispatch()
+
+    const isLoading = useSelector(state => state.loading.isLoading)
+
 
     return (
         <Formik
@@ -55,7 +58,7 @@ export const Login = () => {
                             activeOutlineColor='#005374'
 
                         />
-                        <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'> Log In</Button>
+                        <Button onPress={handleSubmit} loading={isLoading} title="Submit" mode='contained' color='#005374'> Log In</Button>
                     </View>
                 </View>
 
