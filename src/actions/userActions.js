@@ -137,6 +137,8 @@ export const markUserNotificationAsRead = (user, notification) => (
         type: FINISHED_LOADING,
         payload: true,
       });
+
+      dispatch(loadUser())
       // sendNotification('User Edited Successfully','success');
     })
     .catch((err) =>

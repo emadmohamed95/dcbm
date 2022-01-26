@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
-import { DataTable } from 'react-native-paper';
+import { DataTable, Searchbar } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
@@ -47,6 +47,10 @@ export const Country = ({navigation}) => {
     const [page, setPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(optionsPerPage[0]);
     const [paginatedData, setPaginatedData] = useState([]);
+    const [from, setFrom] = useState(0);
+    const [to, setTo] = useState(0);
+    const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
 
     const dispatch = useDispatch()
 
@@ -59,26 +63,61 @@ export const Country = ({navigation}) => {
     const countries = useSelector(state => state.country.countries)
 
 
-    const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, countries.length);
+    // const from = page * itemsPerPage;
+    // const to = Math.min((page + 1) * itemsPerPage, countries.length);
 
-    useEffect(() => {
-        setPage(0);
-        const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, countries.length);
-    setPaginatedData(countries.slice(from, to))
-    }, [itemsPerPage]);
+    // useEffect(() => {
+    //     setPage(0);
+    //     const from = page * itemsPerPage;
+    // const to = Math.min((page + 1) * itemsPerPage, countries.length);
+    // setPaginatedData(countries.slice(from, to))
+    // }, [itemsPerPage]);
 
-    useEffect(() => {
-        setPaginatedData(countries.slice(from, to))
-    }, [countries]);
+    // useEffect(() => {
+    //     setPaginatedData(countries.slice(from, to))
+    // }, [countries]);
 
     
-    useEffect(() => {
-        setPaginatedData(countries.slice(from, to))
-    }, [page])
+    // useEffect(() => {
+    //     setPaginatedData(countries.slice(from, to))
+    // }, [page])
 
     // console.log(countries)
+
+    useEffect(() => {
+        setData(countries)
+        setFilteredData(countries)
+    }, [countries]);
+
+
+    useEffect(() => {
+        setPage(0)
+        const nfrom = 0 * itemsPerPage;
+        setFrom(nfrom)
+        const nto = Math.min((0 + 1) * itemsPerPage, filteredData.length);
+        setTo(nto)
+        setPaginatedData(filteredData.slice(nfrom, nto))
+     }, [filteredData,itemsPerPage])
+
+
+     useEffect(() => {
+        const nfrom = page * itemsPerPage;
+        setFrom(nfrom)
+        const nto = Math.min((page + 1) * itemsPerPage, filteredData.length);
+        setTo(nto)
+        setPaginatedData(filteredData.slice(nfrom, nto))
+    }, [page])
+
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    const onChangeSearch = query => {
+        setSearchQuery(query)
+        setFilteredData(data.filter((item) => {
+            return Object.values(item).join('').toLowerCase().includes(query.toLowerCase())
+        }))
+    };
+
     const isLoading = useSelector(state => state.loading.isLoading)
 
     return (
@@ -86,6 +125,11 @@ export const Country = ({navigation}) => {
         <ScrollView>
         {isLoading?<Loading/>:
             <>
+            <Searchbar
+                    placeholder="Search"
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
+                />
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
@@ -103,14 +147,14 @@ export const Country = ({navigation}) => {
                 ))}
 
                 <DataTable.Pagination
-                    page={page}
-                    numberOfPages={Math.ceil(countries.length / itemsPerPage)}
-                    onPageChange={page => setPage(page)}
-                    label={`${from + 1}-${to} of ${countries.length}`} optionsPerPage={optionsPerPage}
-                    ishowFastPaginationControls
-                    numberOfItemsPerPageList={optionsPerPage}
-                    numberOfItemsPerPage={itemsPerPage}
-                    onItemsPerPageChange={setItemsPerPage}
+                   page={page}
+                   numberOfPages={Math.ceil(filteredData.length / itemsPerPage)}
+                   onPageChange={page => setPage(page)}
+                   label={`${from + 1}-${to} of ${filteredData.length}`} optionsPerPage={optionsPerPage}
+                   showFastPaginationControls
+                   numberOfItemsPerPageList={optionsPerPage}
+                   numberOfItemsPerPage={itemsPerPage}
+                   onItemsPerPageChange={setItemsPerPage}
                 // selectPageDropdownLabel={'R'}
                 />
             </DataTable>

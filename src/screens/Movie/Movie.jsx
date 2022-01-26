@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
-import { DataTable } from 'react-native-paper';
+import { DataTable, Searchbar } from 'react-native-paper';
 import { Avatar, Button, Card, Title, Paragraph, IconButton, Colors } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
@@ -54,6 +54,10 @@ export const Movie = ({navigation}) => {
     const [page, setPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(optionsPerPage[0]);
     const [paginatedData, setPaginatedData] = useState([]);
+    const [from, setFrom] = useState(0);
+    const [to, setTo] = useState(0);
+    const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
 
     const dispatch = useDispatch()
 
@@ -65,24 +69,39 @@ export const Movie = ({navigation}) => {
 
     const movies = useSelector(state => state.movie.movies)
 
-    const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, movies.length);
-
     useEffect(() => {
-        setPage(0);
-        const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, movies.length);
-    setPaginatedData(movies.slice(from, to))
-    }, [itemsPerPage]);
-
-    useEffect(() => {
-        setPaginatedData(movies.slice(from, to))
+        setData(movies)
+        setFilteredData(movies)
     }, [movies]);
 
-    
+
     useEffect(() => {
-        setPaginatedData(movies.slice(from, to))
+        setPage(0)
+        const nfrom = 0 * itemsPerPage;
+        setFrom(nfrom)
+        const nto = Math.min((0 + 1) * itemsPerPage, filteredData.length);
+        setTo(nto)
+        setPaginatedData(filteredData.slice(nfrom, nto))
+     }, [filteredData,itemsPerPage])
+
+
+     useEffect(() => {
+        const nfrom = page * itemsPerPage;
+        setFrom(nfrom)
+        const nto = Math.min((page + 1) * itemsPerPage, filteredData.length);
+        setTo(nto)
+        setPaginatedData(filteredData.slice(nfrom, nto))
     }, [page])
+
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    const onChangeSearch = query => {
+        setSearchQuery(query)
+        setFilteredData(data.filter((item) => {
+            return Object.values(item).join('').toLowerCase().includes(query.toLowerCase())
+        }))
+    };
 
     const isLoading = useSelector(state => state.loading.isLoading)
 
@@ -92,10 +111,15 @@ export const Movie = ({navigation}) => {
         <ScrollView>
         {isLoading?<Loading/>:
             <>
+            <Searchbar
+                    placeholder="Search"
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
+                />
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Name</DataTable.Title>
-                    <DataTable.Title >Code</DataTable.Title>
+                    <DataTable.Title >Localized Name</DataTable.Title>
                     <IconButton
                         icon="plus-circle"
                         color={'#005374'}
@@ -109,15 +133,14 @@ export const Movie = ({navigation}) => {
                 ))}
 
                 <DataTable.Pagination
-                    page={page}
-                    numberOfPages={Math.ceil(movies.length / itemsPerPage)}
-                    onPageChange={page => setPage(page)}
-                    label={`${from + 1}-${to} of ${movies.length}`}
-                    showFastPaginationControls
-                    numberOfItemsPerPageList={optionsPerPage}
-                    numberOfItemsPerPage={itemsPerPage}
-                    onItemsPerPageChange={setItemsPerPage}
-                    // selectPageDropdownLabel={'R'}
+                   page={page}
+                   numberOfPages={Math.ceil(filteredData.length / itemsPerPage)}
+                   onPageChange={page => setPage(page)}
+                   label={`${from + 1}-${to} of ${filteredData.length}`} optionsPerPage={optionsPerPage}
+                   showFastPaginationControls
+                   numberOfItemsPerPageList={optionsPerPage}
+                   numberOfItemsPerPage={itemsPerPage}
+                   onItemsPerPageChange={setItemsPerPage}
                 />
             </DataTable>
             </>}

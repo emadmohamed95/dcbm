@@ -80,22 +80,6 @@ export const Distributor = ({ navigation }) => {
         setPaginatedData(filteredData.slice(nfrom, nto))
      }, [filteredData,itemsPerPage])
 
-    // const distributors = users.filter((user) => user.type.name == "Distributor")
-
-
-    // const from = page * itemsPerPage;
-    // const to = Math.min((page + 1) * itemsPerPage, distributors.length);
-
-    // useEffect(() => {
-    //     setPage(0);
-    //     const from = page * itemsPerPage;
-    //     const to = Math.min((page + 1) * itemsPerPage, distributors.length);
-    //     setPaginatedData(distributors.slice(from, to))
-    // }, [itemsPerPage]);
-
-    // useEffect(() => {
-    //     setPaginatedData(distributors.slice(from, to))
-    // }, [users]);
 
 
     useEffect(() => {
@@ -118,12 +102,6 @@ export const Distributor = ({ navigation }) => {
         }))
     };
     
-    // useEffect(() => {
-    //     setPage(0);
-    //     const from = page * itemsPerPage;
-    //     const to = Math.min((page + 1) * itemsPerPage, filteredData.length);
-    //     setPaginatedData(filteredData.slice(from, to))
-    // }, [filteredData])
 
 
     const isLoading = useSelector(state => state.loading.isLoading)
