@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, SafeAreaView } from 'react-native'
+import { Text, View, StyleSheet, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from "yup";
 import { addUser, changePassword, editUser } from '../../actions/userActions';
@@ -62,7 +62,7 @@ export const ChangePassword = ({ route, navigation }) => {
                 onSubmit={handleOnSubmit}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched }) => (
-                    <View style={styles.container}>
+          <KeyboardAvoidingView style={styles.container} behavior='padding'>
 
                         <View style={styles.div}>
 
@@ -121,10 +121,10 @@ export const ChangePassword = ({ route, navigation }) => {
 
                             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                                 <Button onPress={handleSubmit} title="Submit" mode='contained' color='#005374'>Change Password</Button>
-                                {/* <Button onPress={navigation.goBack} mode='default' color='#005374'>Cancel</Button> */}
+                                <Button onPress={navigation.goBack} mode='default' color='#005374'>Cancel</Button>
                             </View>
                         </View>
-                    </View>
+                    </KeyboardAvoidingView>
 
                 )
                 }

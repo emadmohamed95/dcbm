@@ -4,6 +4,8 @@ import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../actions/authActions';
 import { TextInput, Button } from 'react-native-paper';
+import { KeyboardAvoidingView } from 'react-native';
+
 
 export const Login = () => {
     const dispatch = useDispatch()
@@ -22,7 +24,7 @@ export const Login = () => {
             {({ handleChange, handleBlur, handleSubmit, values }) => (
                 <View style={styles.container}>
 
-                    <View style={styles.div}>
+                    <KeyboardAvoidingView style={styles.div} behavior="padding">
 
                         <Image
                             source={require('../../assets/logo.png')}
@@ -59,7 +61,7 @@ export const Login = () => {
 
                         />
                         <Button onPress={handleSubmit} loading={isLoading} title="Submit" mode='contained' color='#005374'> Log In</Button>
-                    </View>
+                    </KeyboardAvoidingView>
                 </View>
 
             )}

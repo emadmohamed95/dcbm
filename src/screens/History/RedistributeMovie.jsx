@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, SafeAreaView } from 'react-native'
+import { Text, View, StyleSheet, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from "yup";
 import { forEach as _forEach, union as _union, differenceWith as _differenceWith, concat as _concat } from "lodash";
@@ -160,8 +160,7 @@ export const RedistributeMovie = ({ route, navigation }) => {
                 onSubmit={handleOnSubmit}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, setFieldValue, errors, touched }) => (
-                    <View style={styles.container}>
-
+                    <KeyboardAvoidingView style={styles.container} behavior='padding'>
                         <View style={styles.div}>
 
 
@@ -285,7 +284,7 @@ export const RedistributeMovie = ({ route, navigation }) => {
                                 <Button onPress={navigation.goBack} mode='default' color='#005374'>Cancel</Button>
                             </View>
                         </View>
-                    </View>
+                    </KeyboardAvoidingView>
 
                 )
                 }
