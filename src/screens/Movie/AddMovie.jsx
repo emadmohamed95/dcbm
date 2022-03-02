@@ -475,6 +475,13 @@ export const Addmovie = ({ route, navigation }) => {
                             }}>Choose DKDM
                             </Button>:<></>}
 
+                            {result && result.length>0? 
+                            
+                            <View>
+                            {result.map(file=><Text>{file.name}</Text>)}
+                            </View>
+                            :
+                            <></>}
 
 
 

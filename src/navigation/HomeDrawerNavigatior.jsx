@@ -17,6 +17,7 @@ import { ProfileStack } from './ProfileStack';
 import { Notification } from '../screens/Notificatiion/Notification';
 import { useSelector } from 'react-redux';
 import { Loading } from '../screens/Loading/Loading';
+import { NotificationStack } from './NotificationStack';
 
 const Drawer = createDrawerNavigator();
 
@@ -28,8 +29,9 @@ export const HomeDrawerNavigator = () => {
     return (<>
     
         {/* {!isLoading? */}
-        <Drawer.Navigator screenOptions={{
-            header: (props) => <CustomNavigationBar {...props} />,
+        <Drawer.Navigator backBehavior='none' screenOptions={{
+            // header: (props) => <CustomNavigationBar back {...props} />,
+            headerShown:false,
             drawerActiveTintColor:'#005374'
         }} initialRouteName="Home" drawerContent={(props) => <CustomDrawer {...props} />}>
 
@@ -54,7 +56,7 @@ export const HomeDrawerNavigator = () => {
             </>
                 : <></>}
             <Drawer.Screen name="Profile" component={ProfileStack} />
-            <Drawer.Screen name="Notifications" component={Notification} />
+            <Drawer.Screen name="Notifications" component={NotificationStack}/>
             {/* <Drawer.Screen name="Loading" component={Loading} /> */}
 
 

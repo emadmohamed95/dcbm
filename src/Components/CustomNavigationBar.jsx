@@ -29,11 +29,13 @@ export const CustomNavigationBar = ({ navigation, back ,route, options}) => {
 
   const isDrawerOpen = useDrawerStatus() === 'open';
 
+  console.log(navigation.canGoBack())
 
   return (
     <Appbar.Header style={styles.header}>
-      {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
-      {!isDrawerOpen ? <IconButton
+      {navigation.canGoBack() ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+      {/* <Appbar.BackAction onPress={navigation.goBack} /> */}
+      {!navigation.canGoBack()?!isDrawerOpen ? <IconButton
         icon="menu"
         color={'white'}
         // size={20}
@@ -45,7 +47,7 @@ export const CustomNavigationBar = ({ navigation, back ,route, options}) => {
           color={'white'}
           // size={20}
           onPress={() => navigation.toggleDrawer()}
-        />}
+        />:null}
       <Appbar.Content title={title} />
 
       <View style={{ display: 'flex', flexDirection: 'row' }}>

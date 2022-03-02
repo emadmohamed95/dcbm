@@ -294,7 +294,13 @@ export const Addcinema = ({ route, navigation }) => {
                             }}>Choose Certificates
                             </Button>:<></>}
 
-
+                            {result && result.length>0? 
+                            
+                            <View>
+                            {result.map(file=><Text>{file.name}</Text>)}
+                            </View>
+                            :
+                            <></>}
 
 
                             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop:20 }}>

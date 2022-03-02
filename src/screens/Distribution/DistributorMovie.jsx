@@ -24,7 +24,9 @@ const UserRow = ({ movie,navigation }) => {
 
 
     return (
-        <><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
+        <><DataTable.Row onPress={() => navigation.push('MovieKDMS', {
+            movie:movie
+          })}>
             <DataTable.Cell style={{}}>{movie.name}</DataTable.Cell>
             <DataTable.Cell >{movie.localizedName}</DataTable.Cell>
 

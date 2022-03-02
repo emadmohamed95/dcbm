@@ -148,7 +148,13 @@ export const AddScreen = ({ route, navigation }) => {
                             }}>Choose Certificate
                             </Button>:<></>}
 
-
+                            {result && result.length>0? 
+                            
+                            <View>
+                            {result.map(file=><Text>{file.name}</Text>)}
+                            </View>
+                            :
+                            <></>}
 
 
                             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>

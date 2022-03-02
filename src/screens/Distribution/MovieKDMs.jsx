@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers } from '../../actions/userActions'
 import { DataTable } from 'react-native-paper';
@@ -9,6 +9,7 @@ import { yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
 import { deassignMovie, deleteMovieVersion, distributeMovie, getMovieVersionsAssignedToUser } from '../../actions/movieActions';
 import { Loading } from '../Loading/Loading';
 import { startLoading, finishLoading } from '../../actions/loadingActions'
+import { format, parseISO } from 'date-fns';
 
 const optionsPerPage = [5, 10, 20];
 
@@ -39,7 +40,7 @@ const UserRow = ({ mvCinema, navigation, movie, sessionUser, refreshData, setRef
     return (
         <><DataTable.Row onPress={() => sethidden(hidden => !hidden)}>
             <DataTable.Cell>{mvCinema.name}</DataTable.Cell>
-            <DataTable.Cell>{mvCinema.country.name}</DataTable.Cell>
+            {/* <DataTable.Cell>{mvCinema.country.name}</DataTable.Cell> */}
 
             <IconButton
                 icon="account-key"
@@ -61,11 +62,20 @@ const UserRow = ({ mvCinema, navigation, movie, sessionUser, refreshData, setRef
                 onPress={() => onClickDeassignCinemaMovies()}
             />
         </DataTable.Row>
+
+            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ width: '75%' }}>
+                    <Text>Country: {mvCinema.country.name}</Text>
+                    <Text>Start Date: {format(parseISO(mvCinema.CinemaMovies.startDate), 'MM/dd/yyyy h:m:s a')}</Text>
+                    <Text>End Date: {format(parseISO(mvCinema.CinemaMovies.endDate), 'MM/dd/yyyy h:m:s a')}</Text>
+
+                </View>
+            </View>
         </>
     )
 }
 
-export const MovieKDMs = ({ navigation, movie }) => {
+export const MovieKDMs = ({ navigation, route }) => {
 
     const [page, setPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(optionsPerPage[0]);
@@ -85,6 +95,7 @@ export const MovieKDMs = ({ navigation, movie }) => {
     const dispatch = useDispatch()
 
 
+    const { movie } = route?.params ? route.params : {};
 
 
     useEffect(() => {
@@ -104,7 +115,7 @@ export const MovieKDMs = ({ navigation, movie }) => {
                     })
                     // console.log(mvc)
 
-                    setMvCinemas(mvc.filter(mvcc=>!mvcc.CinemaMovies.kdmCreated))
+                    setMvCinemas(mvc.filter(mvcc => !mvcc.CinemaMovies.kdmCreated))
                     // setMvCinemas([].concat.apply([], res.data.map(mv => mv.cinemas)).filter(mvc => !mvc.CinemaMovies.kdmCreated))
                     // console.log(mvcc)
                     // finishLoading()
@@ -173,59 +184,66 @@ export const MovieKDMs = ({ navigation, movie }) => {
     return (<>
         {isLoading ? <Loading /> :
             <>
-                <DataTable>
-                    <DataTable.Header>
-                        <DataTable.Title >Cinema</DataTable.Title>
-                        <DataTable.Title >Country</DataTable.Title>
-                        {/* <IconButton
+                <SafeAreaView>
+                    <ScrollView>
+                        <DataTable>
+                            <DataTable.Header>
+        
+                                <DataTable.Title >{movie.name}</DataTable.Title>
+                                {/* <DataTable.Title >Country</DataTable.Title> */}
+                                {/* <DataTable.Title >Start Date</DataTable.Title>
+                        <DataTable.Title >End Date</DataTable.Title> */}
+                                {/* <IconButton
                         icon="plus-circle"
                         color={'#005374'}
                         size={24}
                         onPress={() => navigation.navigate('AddMovieVersion', {
                             movie: movie
                         })} /> */}
-                        <IconButton
-                            icon="account-key"
-                            color={'#005374'}
-                            size={20}
-                            disabled={paginatedData.length==0}
-                        onPress={() => onClickDistributeMovie(false)}
-                        />
-                        <IconButton
-                            icon="projector"
-                            color={'#005374'}
-                            size={20}
-                            disabled={paginatedData.length==0}
+                                <IconButton
+                                    icon="account-key"
+                                    color={'#005374'}
+                                    size={20}
+                                    disabled={paginatedData.length == 0}
+                                    onPress={() => onClickDistributeMovie(false)}
+                                />
+                                <IconButton
+                                    icon="projector"
+                                    color={'#005374'}
+                                    size={20}
+                                    disabled={paginatedData.length == 0}
 
-                        onPress={() => onClickDistributeMovie(true)}
-                        />
+                                    onPress={() => onClickDistributeMovie(true)}
+                                />
 
-                        <IconButton
-                            icon="delete"
-                            color={'#005374'}
-                            size={20}
-                            disabled={paginatedData.length==0}
+                                <IconButton
+                                    icon="delete"
+                                    color={'#005374'}
+                                    size={20}
+                                    disabled={paginatedData.length == 0}
 
-                        onPress={() => onClickDeassignCinemaMovies()}
-                        />
-                    </DataTable.Header>
+                                    onPress={() => onClickDeassignCinemaMovies()}
+                                />
+                            </DataTable.Header>
 
-                    {paginatedData.map((mvCinema, i) => (
-                        <UserRow mvCinema={mvCinema} key={i} navigation={navigation} movie={movie} sessionUser={sessionUser} refreshData={refreshData} setRefreshData={setRefreshData}></UserRow>
-                    ))}
+                            {paginatedData.map((mvCinema, i) => (
+                                <UserRow mvCinema={mvCinema} key={i} navigation={navigation} movie={movie} sessionUser={sessionUser} refreshData={refreshData} setRefreshData={setRefreshData}></UserRow>
+                            ))}
 
-                    <DataTable.Pagination
-                        page={page}
-                        numberOfPages={Math.ceil(mvCinemas.length / itemsPerPage)}
-                        onPageChange={page => setPage(page)}
-                        label={`${from + 1}-${to} of ${mvCinemas.length}`} optionsPerPage={optionsPerPage}
-                        showFastPaginationControls
-                        numberOfItemsPerPageList={optionsPerPage}
-                        numberOfItemsPerPage={itemsPerPage}
-                        onItemsPerPageChange={setItemsPerPage}
-                    // selectPageDropdownLabel={'R'}
-                    />
-                </DataTable>
+                            <DataTable.Pagination
+                                page={page}
+                                numberOfPages={Math.ceil(mvCinemas.length / itemsPerPage)}
+                                onPageChange={page => setPage(page)}
+                                label={`${from + 1}-${to} of ${mvCinemas.length}`} optionsPerPage={optionsPerPage}
+                                showFastPaginationControls
+                                numberOfItemsPerPageList={optionsPerPage}
+                                numberOfItemsPerPage={itemsPerPage}
+                                onItemsPerPageChange={setItemsPerPage}
+                            // selectPageDropdownLabel={'R'}
+                            />
+                        </DataTable>
+                    </ScrollView>
+                </SafeAreaView>
             </>}
     </>
     )
